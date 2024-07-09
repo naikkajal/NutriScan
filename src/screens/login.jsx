@@ -1,7 +1,13 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Login = () => {
+  const navigation = useNavigation();
+  const handleRegister = () => {
+    navigation.navigate("Signup");
+  };
   return (
     <View style={styles.welcontainer}>
       <Text style={styles.weltext}>Welcome</Text>
@@ -25,9 +31,11 @@ const Login = () => {
         <Text style={styles.signintext}>SignIn</Text>
       </View>
       <View>
+      <TouchableOpacity onPress={handleRegister}>
         <Text style={styles.createtext}>
           Don't have an Account?<Text style={{textDecorationLine:"underline"}}>Create</Text>
         </Text>
+      </TouchableOpacity>
       </View>
     </View>
 
