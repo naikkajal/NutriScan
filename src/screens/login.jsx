@@ -1,12 +1,27 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { auth } from '../../firebase';  
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
   const handleRegister = () => {
     navigation.navigate("Signup");
+  };
+  const handleAlert = () => {
+    navigation.navigate("Alert");
+  };
+  const handleLogin = () => {
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+        console.log('Logged in with:', user.email);
+      })
+      .catch(error => alert(error.message));
   };
   return (
     <View style={styles.welcontainer}>
@@ -28,7 +43,9 @@ const Login = () => {
       </View>
       <Text style={styles.forgottext}>Forgot Password?</Text>
       <View style={styles.signinbutton}>
-        <Text style={styles.signintext}>SignIn</Text>
+      <TouchableOpacity onPress={handleLogin}>
+          <Text style={styles.signintext}>Sign In</Text>
+        </TouchableOpacity>
       </View>
       <View>
       <TouchableOpacity onPress={handleRegister}>
