@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../../firebase';  // Make sure this path is correct
+import { auth } from '../../firebase';  
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -29,13 +29,6 @@ const Signup = () => {
       <View style={styles.usercontainer}>
         <TextInput
           style={styles.usertext}
-          placeholder='Username'
-          placeholderTextColor={"black"}
-        />
-      </View>
-      <View style={styles.usercontainer}>
-        <TextInput
-          style={styles.usertext}
           placeholder='Email'
           placeholderTextColor={"black"}
           onChangeText={text => setEmail(text)}
@@ -54,14 +47,14 @@ const Signup = () => {
       </View>
       <Text style={styles.forgottext}>Forgot Password?</Text>
       <View style={styles.signinbutton}>
-        <TouchableOpacity onPress={handleSignUp} >
-          <Text style={styles.signintext}>Sign In</Text>
+        <TouchableOpacity onPress={handleSignUp}>
+          <Text style={styles.signintext}>Sign Up</Text>
         </TouchableOpacity>
       </View>
       <View>
         <TouchableOpacity onPress={handleRegister}>
           <Text style={styles.alreadytext}>
-            Don't have an Account?<Text style={{ textDecorationLine: "underline" }}>Create</Text>
+            Already have an Account?<Text style={{ textDecorationLine: "underline" }}> Sign In</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -75,7 +68,7 @@ const styles = StyleSheet.create({
   createcontainer: { alignContent: "center" },
   createtext: {
     textAlign: "center",
-    marginTop: 100,
+    marginTop: 160,
     fontSize: 35,
     fontWeight: "bold"
   },
@@ -94,7 +87,8 @@ const styles = StyleSheet.create({
     borderRadius: 50
   },
   usertext: {
-    marginLeft: 30
+    marginLeft: 30,
+    flex: 1
   },
   passcontainer: {
     backgroundColor: "lightgrey",
@@ -126,6 +120,6 @@ const styles = StyleSheet.create({
   },
   alreadytext: {
     textAlign: "center",
-    marginTop: 10
+    marginTop: 200
   }
 });
