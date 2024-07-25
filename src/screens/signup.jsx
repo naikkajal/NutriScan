@@ -1,20 +1,47 @@
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Fontisto } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 const Signup = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
+
   const handleRegister = () => {
-    navigation.navigate("Login");
-  }
+    if (email === '' || password === '') {
+      Alert.alert('Error', 'Email and Password fields cannot be empty');
+      return;
+    }
+
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        Alert.alert('Success', 'User account created & signed in!');
+        navigation.navigate('Login');
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          Alert.alert('Error', 'That email address is already in use!');
+        }
+
+        if (error.code === 'auth/invalid-email') {
+          Alert.alert('Error', 'That email address is invalid!');
+        }
+
+        Alert.alert('Error', error.message);
+      });
+  };
 
   return (
     <View style={styles.content}>
-      <Image source={require("../src/images/topimg.png")} style={styles.image} />
+      <Image source={require("../images/topimg.png")} style={styles.image} />
+
       <Text style={styles.signup}>Create Account</Text>
       <Text style={styles.getstarted}>Just a few quick things to get started</Text>
       <View style={styles.usernamecontainer}>
@@ -23,6 +50,8 @@ const Signup = () => {
           style={styles.usernametext}
           placeholder='Username'
           placeholderTextColor={"#888"}
+          value={username}
+          onChangeText={setUsername}
         />
       </View>
       <View style={styles.emailcontainer}>
@@ -31,6 +60,8 @@ const Signup = () => {
           style={styles.emailtext}
           placeholder='Email'
           placeholderTextColor={"#888"}
+          value={email}
+          onChangeText={setEmail}
         />
       </View>
       <View style={styles.mobilecontainer}>
@@ -39,6 +70,8 @@ const Signup = () => {
           style={styles.mobiletext}
           placeholder='Mobile No.'
           placeholderTextColor={"#888"}
+          value={mobile}
+          onChangeText={setMobile}
         />
       </View>
       <View style={styles.passwordcontainer}>
@@ -47,6 +80,9 @@ const Signup = () => {
           style={styles.passwordtext}
           placeholder='Password'
           placeholderTextColor={"#888"}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
       <View>
@@ -65,7 +101,7 @@ const Signup = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.alhaveacccountainer}>
-        <TouchableOpacity onPress={handleRegister}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.alhaveacctext}>
             Already have an account? <Text style={{ textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign In</Text>
           </Text>
@@ -75,7 +111,7 @@ const Signup = () => {
   );
 }
 
-export default Signup
+export default Signup;
 
 const styles = StyleSheet.create({
   content: {
@@ -90,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 31,
     textAlign: "center",
     fontWeight: "bold",
-    marginTop: 40
+    marginTop: 25
   },
   getstarted: {
     textAlign: "center",
