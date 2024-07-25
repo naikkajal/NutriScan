@@ -4,18 +4,12 @@ import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, Platfor
 import Entypo from '@expo/vector-icons/Entypo';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 
 const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  // Configure Google Sign-In
-  GoogleSignin.configure({
-    webClientId: 684377049952-hvouvnnude5oah285o8urfammb7ugiht.apps.googleusercontent.com,
-  });
 
   const handleRegister = () => {
     navigation.navigate("Signup");
@@ -53,7 +47,7 @@ const Login = () => {
     >
       <ScrollView contentContainerStyle={styles.innerContainer}>
         <View style={styles.content}>
-          <Image source={require("../src/images/topimg.png")} style={styles.image} />
+          <Image source={require("../images/topimg.png")} style={styles.image} />
           <View style={styles.hellocontainer}>
             <Text style={styles.hellotext}>Welcome</Text>
           </View>
@@ -94,16 +88,7 @@ const Login = () => {
               <Text style={styles.signtext}>Sign in</Text>
             </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity onPress={signInWithGoogle}>
-            <LinearGradient
-              colors={['#8A2BE2', '#FF1493']}
-              style={styles.gradientIconContainer}
-              start={[0, 0]}
-              end={[1, 1]}
-            >
-              <Text style={styles.signtext}>Sign in with Google</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+
         </View>
         <View style={styles.donthaveacccountainer}>
           <TouchableOpacity onPress={handleRegister}>
