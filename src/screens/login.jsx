@@ -1,10 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+import { auth } from '../../firebase';  
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -17,26 +17,11 @@ const Login = () => {
 
   const handleSignin = async () => {
     try {
-      await auth().signInWithEmailAndPassword(email, password);
-      navigation.navigate("Alert");
+      await signInWithEmailAndPassword(auth, email, password);
+      navigation.navigate("Main");
     } catch (error) {
       console.error(error.message);
-    }
-  };
-
-  const signInWithGoogle = async () => {
-    try {
-      // Get the users ID token
-      const { idToken } = await GoogleSignin.signIn();
-
-      // Create a Google credential with the token
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-      // Sign-in the user with the credential
-      await auth().signInWithCredential(googleCredential);
-      navigation.navigate("Alert");
-    } catch (error) {
-      console.error(error);
+      Alert.alert('Error', error.message);
     }
   };
 
@@ -88,7 +73,6 @@ const Login = () => {
               <Text style={styles.signtext}>Sign in</Text>
             </LinearGradient>
           </TouchableOpacity>
-
         </View>
         <View style={styles.donthaveacccountainer}>
           <TouchableOpacity onPress={handleRegister}>
@@ -98,7 +82,6 @@ const Login = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <StatusBar style="auto" />
     </KeyboardAvoidingView>
   );
 };
@@ -204,8 +187,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-
-
 
 
 
