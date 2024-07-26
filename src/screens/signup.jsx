@@ -4,7 +4,8 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { Fontisto } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase'; // Adjust the path to your firebase.js file
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -19,8 +20,7 @@ const Signup = () => {
       return;
     }
 
-    auth()
-      .createUserWithEmailAndPassword(email, password)
+    createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
         Alert.alert('Success', 'User account created & signed in!');
         navigation.navigate('Login');
@@ -28,13 +28,11 @@ const Signup = () => {
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
           Alert.alert('Error', 'That email address is already in use!');
-        }
-
-        if (error.code === 'auth/invalid-email') {
+        } else if (error.code === 'auth/invalid-email') {
           Alert.alert('Error', 'That email address is invalid!');
+        } else {
+          Alert.alert('Error', error.message);
         }
-
-        Alert.alert('Error', error.message);
       });
   };
 
@@ -44,40 +42,40 @@ const Signup = () => {
 
       <Text style={styles.signup}>Create Account</Text>
       <Text style={styles.getstarted}>Just a few quick things to get started</Text>
-      <View style={styles.usernamecontainer}>
-        <Entypo name="user" size={20} color="black" style={styles.usericon} />
+      <View style={styles.inputContainer}>
+        <Entypo name="user" size={20} color="black" style={styles.icon} />
         <TextInput
-          style={styles.usernametext}
+          style={styles.inputText}
           placeholder='Username'
           placeholderTextColor={"#888"}
           value={username}
           onChangeText={setUsername}
         />
       </View>
-      <View style={styles.emailcontainer}>
-        <Fontisto name="email" size={24} color="black" style={styles.emailicon} />
+      <View style={styles.inputContainer}>
+        <Fontisto name="email" size={24} color="black" style={styles.icon} />
         <TextInput
-          style={styles.emailtext}
+          style={styles.inputText}
           placeholder='Email'
           placeholderTextColor={"#888"}
           value={email}
           onChangeText={setEmail}
         />
       </View>
-      <View style={styles.mobilecontainer}>
-        <Entypo name="mobile" size={24} color="black" style={styles.usericon} />
+      <View style={styles.inputContainer}>
+        <Entypo name="mobile" size={24} color="black" style={styles.icon} />
         <TextInput
-          style={styles.mobiletext}
+          style={styles.inputText}
           placeholder='Mobile No.'
           placeholderTextColor={"#888"}
           value={mobile}
           onChangeText={setMobile}
         />
       </View>
-      <View style={styles.passwordcontainer}>
-        <Entypo name="lock" size={20} color="black" style={styles.usericon} />
+      <View style={styles.inputContainer}>
+        <Entypo name="lock" size={20} color="black" style={styles.icon} />
         <TextInput
-          style={styles.passwordtext}
+          style={styles.inputText}
           placeholder='Password'
           placeholderTextColor={"#888"}
           secureTextEntry
@@ -85,28 +83,22 @@ const Signup = () => {
           onChangeText={setPassword}
         />
       </View>
-      <View>
-        <Text style={styles.forgotcontainer}>Forgot your password?</Text>
-      </View>
-      <View style={styles.createcontainer}>
-        <TouchableOpacity onPress={handleRegister} style={styles.signinButton}>
-          <LinearGradient
-            colors={['#8A2BE2', '#FF1493']}
-            style={styles.gradientButton}
-            start={[0, 0]}
-            end={[1, 1]}
-          >
-            <Text style={styles.signinText}>Sign In</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.alhaveacccountainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.alhaveacctext}>
-            Already have an account? <Text style={{ textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign In</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.forgotPassword}>Forgot your password?</Text>
+      <TouchableOpacity onPress={handleRegister} style={styles.buttonContainer}>
+        <LinearGradient
+          colors={['#8A2BE2', '#FF1493']}
+          style={styles.gradientButton}
+          start={[0, 0]}
+          end={[1, 1]}
+        >
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginRedirect}>
+        <Text style={styles.loginRedirectText}>
+          Already have an account? <Text style={styles.loginText}>Sign In</Text>
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -116,11 +108,13 @@ export default Signup;
 const styles = StyleSheet.create({
   content: {
     backgroundColor: "white",
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 20,
   },
   image: {
-    width: "120%",
-    height: "20%"
+    width: "100%",
+    height: "20%",
+    resizeMode: 'cover',
   },
   signup: {
     fontSize: 31,
@@ -134,100 +128,59 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 17
   },
-  usernamecontainer: {
+  inputContainer: {
     backgroundColor: "#f1f1f1",
     flexDirection: "row",
     borderRadius: 50,
-    marginHorizontal: 50,
-    marginTop: 30,
-    elevation: 10,
+    marginTop: 20,
+    elevation: 5,
     height: 50,
     alignItems: "center",
+    paddingHorizontal: 20,
   },
-  usernametext: { textAlign: "center" },
-  emailcontainer: {
-    backgroundColor: "#f1f1f1",
-    flexDirection: "row",
-    borderRadius: 50,
-    marginHorizontal: 50,
-    marginTop: 30,
-    elevation: 10,
-    height: 51,
-    alignItems: "center",
+  icon: {
+    marginRight: 10
   },
-  usericon: {
-    marginHorizontal: 20
+  inputText: { 
+    flex: 1,
+    textAlign: "left",
+    fontSize: 16,
   },
-  emailicon: { marginHorizontal: 20 },
-  mobileicon: {},
-  emailtext: {
-    textAlign: "center"
-  },
-  mobilecontainer: {
-    backgroundColor: "#f1f1f1",
-    flexDirection: "row",
-    borderRadius: 50,
-    marginHorizontal: 50,
-    marginTop: 30,
-    elevation: 10,
-    height: 50,
-    alignItems: "center",
-  },
-  mobiletext: { textAlign: "center" },
-  passwordcontainer: {
-    backgroundColor: "#f1f1f1",
-    flexDirection: "row",
-    borderRadius: 50,
-    marginHorizontal: 50,
-    marginTop: 32,
-    elevation: 10,
-    height: 50,
-    alignItems: "center",
-  },
-  passwordtext: { textAlign: "center" },
-  forgotcontainer: {
+  forgotPassword: {
     textAlign: "right",
-    marginRight: 55,
-    marginVertical: 5,
+    marginVertical: 10,
     color: "mediumblue",
     fontWeight: "400",
     fontSize: 15,
-    marginTop: 15
   },
-  createcontainer: {
-    backgroundColor: "#f1f1f1",
-    flexDirection: "row",
+  buttonContainer: {
+    marginTop: 20,
     borderRadius: 50,
-    marginHorizontal: 50,
-    marginTop: 30,
-    elevation: 10,
-    height: 50,
-    alignItems: "center",
-  },
-  signinButton: {
-    flex: 1,
-    borderRadius: 50,
+    elevation: 5,
   },
   gradientButton: {
-    flex: 1,
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+    height: 50,
   },
-  signinText: {
+  buttonText: {
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
   },
-  alhaveacccountainer: {
-    marginTop: 75,
+  loginRedirect: {
+    marginTop: 40,
     alignSelf: 'center',
   },
-  alhaveacctext: {
+  loginRedirectText: {
     textAlign: "center",
     fontSize: 17,
     fontWeight: "300",
-    alignSelf: 'center',
+  },
+  loginText: {
+    textDecorationLine: "underline",
+    color: "darkblue",
+    fontWeight: "bold",
   },
 });
-
