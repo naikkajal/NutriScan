@@ -49,16 +49,25 @@ const CaptureScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Capture Screen</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={takePhoto} style={styles.iconButton}>
-          <Ionicons name="camera" size={32} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
-          <Ionicons name="images" size={32} color="black" />
-        </TouchableOpacity>
+      {!image && <Text style={styles.title}>Click/Select Image</Text>}
+      <View style={styles.imageContainer}>
+        {!image && (
+          <TouchableOpacity onPress={takePhoto} style={styles.cameraIcon}>
+            <Ionicons name="camera" size={50} color="black" />
+          </TouchableOpacity>
+        )}
+        {image && <Image source={{ uri: image }} style={styles.image} />}
       </View>
-      {image && <Image source={{ uri: image }} style={styles.image} />}
+      {!image && (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={takePhoto} style={styles.iconButton}>
+            <Ionicons name="camera" size={32} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
+            <Ionicons name="images" size={32} color="black" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -77,18 +86,33 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
   },
+  imageContainer: {
+    width: '100%',
+    height: 300,
+    backgroundColor: '#d3d3d3',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderRadius: 10,
+  },
+  cameraIcon: {
+    position: 'absolute',
+    zIndex: 1,
+  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '60%',
-    marginBottom: 20,
+    marginTop: 20,
   },
   iconButton: {
     padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
   },
   image: {
-    width: 300,
-    height: 300,
+    width: '100%',
+    height: '100%',
     borderRadius: 10,
   },
 });
