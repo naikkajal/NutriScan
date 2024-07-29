@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import axios from 'axios';
-import { firebase, auth } from './firebaseConfig';
+import { auth } from '../../firebase'; 
 
 const TrackerScreen = () => {
   const [height, setHeight] = useState('');
@@ -14,7 +14,7 @@ const TrackerScreen = () => {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
       } else {
@@ -28,7 +28,7 @@ const TrackerScreen = () => {
 
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/calculate', {
+      const response = await axios.post('http://192.168.1.104:3000/calculate', {
         height: Number(height),
         weight: Number(weight),
         activityLevel,
@@ -38,11 +38,11 @@ const TrackerScreen = () => {
       console.error(error);
     }
   };
-
+  
   const addFoodEntry = async () => {
     try {
       if (userId) {
-        const response = await axios.post('http://localhost:3000/addFood', {
+        const response = await axios.post('http://192.168.1.104:3000/addFood', {
           userId,
           mealType,
           foodItem,
@@ -55,6 +55,7 @@ const TrackerScreen = () => {
       console.error(error);
     }
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
