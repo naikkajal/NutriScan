@@ -28,7 +28,7 @@ const TrackerScreen = () => {
 
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http://192.168.1.104:3000/calculate', {
+      const response = await axios.post('http://192.168.1.104:5011/calculate', {  // Adjusted endpoint
         height: Number(height),
         weight: Number(weight),
         activityLevel,
@@ -38,11 +38,11 @@ const TrackerScreen = () => {
       console.error(error);
     }
   };
-  
+
   const addFoodEntry = async () => {
     try {
       if (userId) {
-        const response = await axios.post('http://192.168.1.104:3000/addFood', {
+        const response = await axios.post('http://192.168.1.104:5011/addFood', {  // Adjusted endpoint
           userId,
           mealType,
           foodItem,
@@ -55,7 +55,6 @@ const TrackerScreen = () => {
       console.error(error);
     }
   };
-  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -87,7 +86,7 @@ const TrackerScreen = () => {
         />
       </View>
       <Button title="Calculate Calorie Intake" onPress={calculateCalorieIntake} />
-      {dailyCalorieIntake && (
+      {dailyCalorieIntake !== null && (
         <Text style={styles.result}>Daily Calorie Intake: {dailyCalorieIntake} kcal</Text>
       )}
       <View style={styles.inputContainer}>

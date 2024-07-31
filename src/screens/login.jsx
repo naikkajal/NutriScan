@@ -3,8 +3,7 @@ import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, Platfor
 import Entypo from '@expo/vector-icons/Entypo';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../../firebase';  
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import axios from 'axios';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -17,8 +16,12 @@ const Login = () => {
 
   const handleSignin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Main");
+      const response = await axios.post('http://192.168.1.102:5011/login', { email, password });
+      if (response.data.status === "ok") {
+        navigation.navigate("Main");
+      } else {
+        Alert.alert('Error', response.data.data);
+      }
     } catch (error) {
       console.error(error.message);
       Alert.alert('Error', error.message);
@@ -187,7 +190,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-
 
 
 
