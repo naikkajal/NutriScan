@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     forgottext:{
       textAlign:"right",
       marginRight:60,
-      marginTop:15,
+      marginTop:16,
       color:"darkblue"
     },
     signinbutton:{ 
