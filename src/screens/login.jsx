@@ -3,8 +3,7 @@ import { StyleSheet, Text, View, Image, TextInput, KeyboardAvoidingView, Platfor
 import Entypo from '@expo/vector-icons/Entypo';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from '../../firebase';  
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import axios from 'axios';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -17,8 +16,12 @@ const Login = () => {
 
   const handleSignin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Main");
+      const response = await axios.post('http://localhost:5011/login', { email, password });
+      if (response.data.status === "ok") {
+        navigation.navigate("Main");
+      } else {
+        Alert.alert('Error', response.data.data);
+      }
     } catch (error) {
       console.error(error.message);
       Alert.alert('Error', error.message);
@@ -89,62 +92,101 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
-    welcontainer:{
-        alignContent:"center"
-    },
-    weltext:{
-        textAlign:"center",
-        marginTop:100,
-        fontSize:35,
-        fontWeight:"bold"
-    },
-    logtext:{
-        textAlign:"center",
-        marginTop:10,
-        fontSize:20,
-        fontWeight:"bold"
-    },
-    usercontainer:{
-      backgroundColor:"lightgrey",
-      flexDirection:"row",
-      marginTop:70,
-      height:60,
-      marginHorizontal:55,
-      borderRadius:50
-    },
-    usertext:{
-      marginLeft:30
-    },
-    passcontainer:{
-      backgroundColor:"lightgrey",
-      flexDirection:"row",
-      marginTop:40,
-      height:60,
-      marginHorizontal:50,
-      borderRadius:50
-    },
-    forgottext:{
-      textAlign:"right",
-      marginRight:60,
-      marginTop:16,
-      color:"darkblue"
-    },
-    signinbutton:{ 
-      backgroundColor:"firebrick",
-      height:50,
-      marginTop:30,
-      marginHorizontal:50,
-      borderRadius:50,
-      alignItems:"center",
-    },
-    signintext:{
-      textAlign:"centre",
-      color:"white",
-      fontSize:20,
-      marginVertical:10
-    },
-    createtext:{
-      textAlign:"center",
-      marginTop:200
-    }
-})
+  container: {
+    backgroundColor: "white",
+    flex: 1,
+  },
+  innerContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+  },
+  content: {
+    marginTop: 0,
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    marginTop: 0,
+  },
+  hellocontainer: {
+    marginTop: 20,
+  },
+  hellotext: {
+    textAlign: "center",
+    fontSize: 50,
+    fontWeight: "bold",
+  },
+  signintext: {
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "530",
+    marginBottom: 20,
+    marginTop: 7,
+  },
+  usernamecontainer: {
+    backgroundColor: "#f1f1f1",
+    flexDirection: "row",
+    borderRadius: 50,
+    marginHorizontal: 50,
+    marginVertical: 20,
+    elevation: 10,
+    height: 50,
+    alignItems: "center",
+  },
+  usernametext: {
+    marginLeft: 10,
+    flex: 1,
+    fontSize: 16,
+    height: "100%",
+    borderRadius: 50,
+    paddingHorizontal: 10,
+  },
+  usericon: {
+    marginLeft: 20,
+  },
+  passwordcontainer: {
+    backgroundColor: "#f1f1f1",
+    flexDirection: "row",
+    borderRadius: 50,
+    marginHorizontal: 50,
+    marginVertical: 20,
+    elevation: 10,
+    height: 50,
+    alignItems: "center",
+  },
+  forgotcontainer: {
+    textAlign: "right",
+    marginRight: 55,
+    marginVertical: 5,
+    color: "mediumblue",
+    fontWeight: "400",
+    fontSize: 15,
+  },
+  signcontainer: {
+    marginTop: 70,
+    marginHorizontal: 50,
+  },
+  signtext: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+  },
+  gradientIconContainer: {
+    borderRadius: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 10,  // Added margin to separate buttons
+  },
+  donthaveacccountainer: {
+    marginTop: 120,
+    alignSelf: 'center',
+  },
+  donthaveacctext: {
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "300",
+    alignSelf: 'center',
+  },
+});

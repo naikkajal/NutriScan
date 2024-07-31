@@ -1,107 +1,115 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Fontisto } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase'; // Adjust the path to your firebase.js file
+import axios from 'axios';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('');
+  const [secretText, setSecretText] = useState('');
   const navigation = useNavigation();
 
   const handleRegister = () => {
-    if (email === '' || password === '') {
-      Alert.alert('Error', 'Email and Password fields cannot be empty');
-      return;
+    const userData = {
+      name: username,
+      email,
+      mobile,
+      password,
+      userType
+    };
+
+    if (userType === 'Admin' && secretText !== 'Text1243') {
+      return Alert.alert('Invalid Admin');
     }
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        Alert.alert('Success', 'User account created & signed in!');
-        navigation.navigate('Login');
+    axios.post('http://192.168.1.30:5001/register', userData)
+      .then(res => {
+        if (res.data.status === 'ok') {
+          Alert.alert('Success', 'Registered Successfully!');
+          navigation.navigate('Login');
+        } else {
+          Alert.alert('Error', JSON.stringify(res.data));
+        }
       })
       .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          Alert.alert('Error', 'That email address is already in use!');
-        } else if (error.code === 'auth/invalid-email') {
-          Alert.alert('Error', 'That email address is invalid!');
-        } else {
-          Alert.alert('Error', error.message);
-        }
+        Alert.alert('Error', error.message);
       });
   };
 
   return (
-    <View style={styles.content}>
-      <Image source={require("../images/topimg.png")} style={styles.image} />
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'} style={{ backgroundColor: 'white' }}>
+      <View style={styles.content}>
+        <Image source={require("../images/topimg.png")} style={styles.image} />
 
-      <Text style={styles.signup}>Create Account</Text>
-      <Text style={styles.getstarted}>Just a few quick things to get started</Text>
-      <View style={styles.inputContainer}>
-        <Entypo name="user" size={20} color="black" style={styles.icon} />
-        <TextInput
-          style={styles.inputText}
-          placeholder='Username'
-          placeholderTextColor={"#888"}
-          value={username}
-          onChangeText={setUsername}
-        />
+        <Text style={styles.signup}>Create Account</Text>
+        <Text style={styles.getstarted}>Just a few quick things to get started</Text>
+        <View style={styles.inputContainer}>
+          <Entypo name="user" size={20} color="black" style={styles.icon} />
+          <TextInput
+            style={styles.inputText}
+            placeholder='Username'
+            placeholderTextColor={"#888"}
+            value={username}
+            onChangeText={setUsername}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Fontisto name="email" size={24} color="black" style={styles.icon} />
+          <TextInput
+            style={styles.inputText}
+            placeholder='Email'
+            placeholderTextColor={"#888"}
+            value={email}
+            onChangeText={setEmail}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Entypo name="mobile" size={24} color="black" style={styles.icon} />
+          <TextInput
+            style={styles.inputText}
+            placeholder='Mobile No.'
+            placeholderTextColor={"#888"}
+            value={mobile}
+            onChangeText={setMobile}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Entypo name="lock" size={20} color="black" style={styles.icon} />
+          <TextInput
+            style={styles.inputText}
+            placeholder='Password'
+            placeholderTextColor={"#888"}
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+        </View>
+        <Text style={styles.forgotPassword}>Forgot your password?</Text>
+        <TouchableOpacity onPress={handleRegister} style={styles.buttonContainer}>
+          <LinearGradient
+            colors={['#8A2BE2', '#FF1493']}
+            style={styles.gradientButton}
+            start={[0, 0]}
+            end={[1, 1]}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginRedirect}>
+          <Text style={styles.loginRedirectText}>
+            Already have an account? <Text style={styles.loginText}>Sign In</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.inputContainer}>
-        <Fontisto name="email" size={24} color="black" style={styles.icon} />
-        <TextInput
-          style={styles.inputText}
-          placeholder='Email'
-          placeholderTextColor={"#888"}
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Entypo name="mobile" size={24} color="black" style={styles.icon} />
-        <TextInput
-          style={styles.inputText}
-          placeholder='Mobile No.'
-          placeholderTextColor={"#888"}
-          value={mobile}
-          onChangeText={setMobile}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Entypo name="lock" size={20} color="black" style={styles.icon} />
-        <TextInput
-          style={styles.inputText}
-          placeholder='Password'
-          placeholderTextColor={"#888"}
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-      </View>
-      <Text style={styles.forgotPassword}>Forgot your password?</Text>
-      <TouchableOpacity onPress={handleRegister} style={styles.buttonContainer}>
-        <LinearGradient
-          colors={['#8A2BE2', '#FF1493']}
-          style={styles.gradientButton}
-          start={[0, 0]}
-          end={[1, 1]}
-        >
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </LinearGradient>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginRedirect}>
-        <Text style={styles.loginRedirectText}>
-          Already have an account? <Text style={styles.loginText}>Sign In</Text>
-        </Text>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
-}
+};
 
 export default Signup;
 
