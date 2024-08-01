@@ -1,56 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import { auth } from '../../firebase'; 
+import { LinearGradient } from 'expo-linear-gradient';
 
 const TrackerScreen = () => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
   const [activityLevel, setActivityLevel] = useState('');
   const [dailyCalorieIntake, setDailyCalorieIntake] = useState(null);
-  const [mealType, setMealType] = useState('');
-  const [foodItem, setFoodItem] = useState('');
-  const [foodEntries, setFoodEntries] = useState([]);
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        // Handle the case where the user is not authenticated
-        console.log('No user is signed in');
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http://192.168.1.104:5011/calculate', {  // Adjusted endpoint
+      const response = await axios.post('http://192.168.1.103:5011/calculate', {
         height: Number(height),
         weight: Number(weight),
+        age: Number(age),
+        gender,
         activityLevel,
       });
       setDailyCalorieIntake(response.data.dailyCalorieIntake);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const addFoodEntry = async () => {
-    try {
-      if (userId) {
-        const response = await axios.post('http://192.168.1.104:5011/addFood', {  // Adjusted endpoint
-          userId,
-          mealType,
-          foodItem,
-        });
-        setFoodEntries(response.data.foodEntries);
-      } else {
-        console.error('User ID is not available');
-      }
     } catch (error) {
       console.error(error);
     }
@@ -60,7 +30,7 @@ const TrackerScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Tracker Screen</Text>
       <View style={styles.inputContainer}>
-        <Text>Height (cm):</Text>
+        <Text style={styles.label}>Height (cm):</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -69,7 +39,7 @@ const TrackerScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <Text>Weight (kg):</Text>
+        <Text style={styles.label}>Weight (kg):</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -78,43 +48,60 @@ const TrackerScreen = () => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <Text>Activity Level:</Text>
+        <Text style={styles.label}>Age:</Text>
         <TextInput
           style={styles.input}
-          value={activityLevel}
-          onChangeText={setActivityLevel}
+          keyboardType="numeric"
+          value={age}
+          onChangeText={setAge}
         />
       </View>
-      <Button title="Calculate Calorie Intake" onPress={calculateCalorieIntake} />
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Gender:</Text>
+        <View style={styles.radioGroup}>
+          <TouchableOpacity
+            style={[styles.radioButton, gender === 'male' && styles.radioButtonSelected]}
+            onPress={() => setGender('male')}
+          >
+            <Text style={styles.radioText}>Male</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.radioButton, gender === 'female' && styles.radioButtonSelected]}
+            onPress={() => setGender('female')}
+          >
+            <Text style={styles.radioText}>Female</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Activity Level:</Text>
+        <View style={styles.radioGroup}>
+          <TouchableOpacity
+            style={[styles.radioButton, activityLevel === 'sedentary' && styles.radioButtonSelected]}
+            onPress={() => setActivityLevel('sedentary')}
+          >
+            <Text style={styles.radioText}>Sedentary</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.radioButton, activityLevel === 'active' && styles.radioButtonSelected]}
+            onPress={() => setActivityLevel('active')}
+          >
+            <Text style={styles.radioText}>Active</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={calculateCalorieIntake}>
+        <LinearGradient
+          colors={['#8A2BE2', '#FF1493']}
+          style={styles.buttonGradient}
+          start={[0, 0]}
+          end={[1, 1]}
+        >
+          <Text style={styles.buttonText}>Calculate Calorie Intake</Text>
+        </LinearGradient>
+      </TouchableOpacity>
       {dailyCalorieIntake !== null && (
         <Text style={styles.result}>Daily Calorie Intake: {dailyCalorieIntake} kcal</Text>
-      )}
-      <View style={styles.inputContainer}>
-        <Text>Meal Type:</Text>
-        <TextInput
-          style={styles.input}
-          value={mealType}
-          onChangeText={setMealType}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text>Food Item:</Text>
-        <TextInput
-          style={styles.input}
-          value={foodItem}
-          onChangeText={setFoodItem}
-        />
-      </View>
-      <Button title="Add Food Entry" onPress={addFoodEntry} />
-      {foodEntries.length > 0 && (
-        <View style={styles.entriesContainer}>
-          <Text style={styles.entriesTitle}>Food Entries:</Text>
-          {foodEntries.map((entry, index) => (
-            <Text key={index}>
-              {entry.mealType}: {entry.foodItem} - {entry.calories} kcal
-            </Text>
-          ))}
-        </View>
       )}
     </ScrollView>
   );
@@ -123,6 +110,7 @@ const TrackerScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
@@ -136,26 +124,51 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 16,
   },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 8,
-    marginVertical: 8,
     borderRadius: 4,
+  },
+  radioGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  radioButton: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 4,
+    backgroundColor: '#fff',
+  },
+  radioButtonSelected: {
+    backgroundColor: '#8A2BE2',
+  },
+  radioText: {
+    color: '#000',
+  },
+  button: {
+    width: '100%',
+    marginTop: 16,
+  },
+  buttonGradient: {
+    paddingVertical: 15,
+    borderRadius: 4,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   result: {
     marginTop: 16,
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  entriesContainer: {
-    marginTop: 24,
-    width: '100%',
-  },
-  entriesTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
   },
 });
 

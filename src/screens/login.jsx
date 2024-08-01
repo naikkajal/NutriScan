@@ -16,7 +16,7 @@ const Login = () => {
 
   const handleSignin = async () => {
     try {
-      const response = await axios.post('http://192.168.1.102:5011/login', { email, password });
+      const response = await axios.post('http://192.168.1.103:5011/login', { email, password });
       if (response.data.status === "ok") {
         navigation.navigate("Main");
       } else {
