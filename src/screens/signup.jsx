@@ -22,7 +22,7 @@ const Signup = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://192.168.1.102:5011/register', { name, email, mobile, password });
+      const response = await axios.post('http://192.168.1.103:5011/register', { name, email, mobile, password });
       if (response.data.status === "ok") {
         Alert.alert('Success', 'User Created');
         navigation.navigate("Login");
