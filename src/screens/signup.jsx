@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Fontisto } from '@expo/vector-icons';
-
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -18,7 +17,7 @@ const Signup = () => {
 
   const handleRegister = () => {
     const userData = {
-      name: username,
+      name,
       email,
       mobile,
       password,
@@ -47,139 +46,166 @@ const Signup = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'} style={{ backgroundColor: 'white' }}>
       <View style={styles.content}>
         <Image source={require("../images/topimg.png")} style={styles.image} />
-
-        <Text style={styles.signup}>Create Account</Text>
-        <Text style={styles.getstarted}>Just a few quick things to get started</Text>
-        <View style={styles.inputContainer}>
-          <Entypo name="user" size={20} color="black" style={styles.icon} />
-          <TextInput
-            style={styles.inputText}
-            placeholder='Username'
-            placeholderTextColor={"#888"}
-            value={username}
-            onChangeText={setUsername}
-          />
+        
+        <View style={styles.formContainer}>
+          <Text style={styles.signup}>Create Account</Text>
+          <Text style={styles.getstarted}>Just a few quick things to get started</Text>
+          
+          <View style={styles.inputContainer}>
+            <Entypo name="user" size={20} color="black" style={styles.icon} />
+            <TextInput
+              style={styles.inputText}
+              placeholder='Username'
+              placeholderTextColor={"#888"}
+              value={name}
+              onChangeText={setName}
+            />
+          </View>
+          
+          <View style={styles.inputContainer}>
+            <Fontisto name="email" size={20} color="black" style={styles.icon} />
+            <TextInput
+              style={styles.inputText}
+              placeholder='Email'
+              placeholderTextColor={"#888"}
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+          
+          <View style={styles.inputContainer}>
+            <Entypo name="mobile" size={20} color="black" style={styles.icon} />
+            <TextInput
+              style={styles.inputText}
+              placeholder='Mobile No.'
+              placeholderTextColor={"#888"}
+              value={mobile}
+              onChangeText={setMobile}
+            />
+          </View>
+          
+          <View style={styles.inputContainer}>
+            <Entypo name="lock" size={20} color="black" style={styles.icon} />
+            <TextInput
+              style={styles.inputText}
+              placeholder='Password'
+              placeholderTextColor={"#888"}
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+          
+          <View style={styles.forgotPasswordContainer}>
+            <Text style={styles.forgotPassword}>Forgot your password?</Text>
+          </View>
+          
+          <TouchableOpacity onPress={handleRegister} style={styles.buttonContainer}>
+            <LinearGradient
+              colors={['#8A2BE2', '#FF1493']}
+              style={styles.gradientButton}
+              start={[0, 0]}
+              end={[1, 1]}
+            >
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+          
+          <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginRedirect}>
+            <Text style={styles.loginRedirectText}>
+              Already have an account? <Text style={styles.loginText}>Sign In</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.inputContainer}>
-          <Fontisto name="email" size={24} color="black" style={styles.icon} />
-          <TextInput
-            style={styles.inputText}
-            placeholder='Email'
-            placeholderTextColor={"#888"}
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Entypo name="mobile" size={24} color="black" style={styles.icon} />
-          <TextInput
-            style={styles.inputText}
-            placeholder='Mobile No.'
-            placeholderTextColor={"#888"}
-            value={mobile}
-            onChangeText={setMobile}
-          />
-        </View>
-        <View style={styles.inputContainer}>
-          <Entypo name="lock" size={20} color="black" style={styles.icon} />
-          <TextInput
-            style={styles.inputText}
-            placeholder='Password'
-            placeholderTextColor={"#888"}
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-        <Text style={styles.forgotPassword}>Forgot your password?</Text>
-        <TouchableOpacity onPress={handleRegister} style={styles.buttonContainer}>
-          <LinearGradient
-            colors={['#8A2BE2', '#FF1493']}
-            style={styles.gradientButton}
-            start={[0, 0]}
-            end={[1, 1]}
-          >
-            <Text style={styles.buttonText}>Sign Up</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginRedirect}>
-          <Text style={styles.loginRedirectText}>
-            Already have an account? <Text style={styles.loginText}>Sign In</Text>
-          </Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
-export default Signup;
-
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    flex: 1,
-  },
-  innerContainer: {
-    flexGrow: 1,
-    justifyContent: 'flex-start',
+  image: {
+    width: "100%",
+    height: 200,
+    marginTop: 0,
   },
   content: {
-    marginTop: 50,
+    flex: 1,
+    backgroundColor: 'white',
   },
-  hellocontainer: {
+  formContainer: {
+    flex: 1,
+    marginHorizontal: 20,
     marginTop: 20,
   },
-  hellotext: {
-    textAlign: "center",
-    fontSize: 35,
+  signup: {
+    fontSize: 32,
     fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  getstarted: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#666",
+    marginBottom: 20,
   },
   inputContainer: {
     backgroundColor: "#f1f1f1",
     flexDirection: "row",
     borderRadius: 50,
-    marginHorizontal: 50,
-    marginVertical: 20,
+    marginVertical: 10,
     elevation: 10,
     height: 50,
     alignItems: "center",
+    paddingHorizontal: 15,
   },
   inputText: {
-    marginLeft: 10,
     flex: 1,
     fontSize: 16,
     height: "100%",
     borderRadius: 50,
     paddingHorizontal: 10,
   },
-  usericon: {
-    marginLeft: 20,
+  icon: {
+    marginRight: 10,
   },
-  signcontainer: {
-    marginTop: 50,
+  forgotPasswordContainer: {
+    alignItems: 'flex-end',
+    marginVertical: 10,
+    marginRight: 20,
+  },
+  forgotPassword: {
+    fontSize: 14,
+    color: '#007BFF',
+  },
+  buttonContainer: {
+    marginVertical: 20,
     marginHorizontal: 50,
   },
-  signtext: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
-  },
-  gradientIconContainer: {
+  gradientButton: {
     borderRadius: 50,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginVertical: 10,  // Added margin to separate buttons
   },
-  haveaccountcontainer: {
-    marginTop: 50,
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loginRedirect: {
     alignSelf: 'center',
+    marginVertical: 20,
   },
-  haveaccounttext: {
-    textAlign: "center",
+  loginRedirectText: {
     fontSize: 16,
     fontWeight: "300",
-    alignSelf: 'center',
+    textAlign: "center",
+  },
+  loginText: {
+    fontWeight: "bold",
+    color: '#007BFF',
   },
 });
+
+export default Signup;

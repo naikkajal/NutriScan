@@ -10,6 +10,7 @@ const TrackerScreen = () => {
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [activityLevel, setActivityLevel] = useState('');
+  const [email, setEmail] = useState('');
   const [dailyCalorieIntake, setDailyCalorieIntake] = useState(null);
 
   const navigation = useNavigation();
@@ -22,6 +23,7 @@ const TrackerScreen = () => {
         age: Number(age),
         gender,
         activityLevel,
+        email, // Add email to the request payload
       });
       setDailyCalorieIntake(response.data.dailyCalorieIntake);
       navigation.navigate('CalorieResult', { dailyCalorieIntake: response.data.dailyCalorieIntake });
@@ -33,6 +35,14 @@ const TrackerScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Calculate Your Daily Calorie Intake</Text>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Email:</Text>
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+        />
+      </View>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Height (cm):</Text>
         <TextInput
@@ -94,16 +104,14 @@ const TrackerScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={styles.button} onPress={calculateCalorieIntake}>
-        <LinearGradient
-          colors={['#8A2BE2', '#FF1493']}
-          style={styles.buttonGradient}
-          start={[0, 0]}
-          end={[1, 1]}
-        >
-          <Text style={styles.buttonText}>Calculate Calorie Intake</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+      <LinearGradient colors={['#4c669f', '#3b5998', '#192f5d']} style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.button} onPress={calculateCalorieIntake}>
+          <Text style={styles.buttonText}>Calculate</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+      {dailyCalorieIntake && (
+        <Text style={styles.result}>Your daily calorie intake should be around {dailyCalorieIntake} calories.</Text>
+      )}
     </ScrollView>
   );
 };
@@ -111,64 +119,69 @@ const TrackerScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 18,
+    padding: 20,
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 24,
-    marginTop: 15,
+    marginBottom: 20,
+    marginTop:40
   },
   inputContainer: {
-    width: '100%',
-    marginBottom: 16,
+    marginBottom: 15,
   },
   label: {
     fontSize: 16,
-    marginBottom: 8,
+    fontWeight: '600',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 8,
-    borderRadius: 4,
+    padding: 10,
+    borderRadius: 5,
   },
   radioGroup: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    marginVertical: 10,
   },
   radioButton: {
     borderWidth: 1,
     borderColor: '#ccc',
+    borderRadius: 5,
     padding: 10,
-    borderRadius: 4,
-    backgroundColor: '#fff',
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   radioButtonSelected: {
-    backgroundColor: '#8A2BE2',
+    backgroundColor: '#4c669f',
+    borderColor: '#4c669f',
   },
   radioText: {
-    color: '#000',
+    color: '#333',
   },
   radioTextSelected: {
     color: '#fff',
   },
-  button: {
-    width: '100%',
-    marginTop: 16,
+  buttonContainer: {
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginVertical: 20,
   },
-  buttonGradient: {
+  button: {
     paddingVertical: 15,
-    borderRadius: 4,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  result: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: '#333',
   },
 });
 
