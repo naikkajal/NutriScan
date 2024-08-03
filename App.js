@@ -9,7 +9,8 @@ import Signup from './src/screens/signup';
 import Login from './src/screens/login';
 import CaptureScreen from './src/screens/capture';
 import TrackerScreen from './src/screens/calorietracker';
-import SplashScreen from './src/screens/splashscreen'; // Importing SplashScreen
+import SplashScreen from './src/screens/splashscreen'; 
+import CalorieResult from './src/screens/CalorieResult'; // Update import path if needed
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -19,10 +20,10 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          if (route.name === 'Capture') {
+          if (route.name === 'Tracker') {
+            return <Ionicons name="fast-food" size={size} color="white" />;
+          } else if (route.name === 'Capture') {
             return <Entypo name="camera" size={size} color={color} />;
-          } else if (route.name === 'Tracker') {
-            return <Ionicons name="fast-food" size={size} color={"white"} />;
           }
         },
         tabBarBackground: () => (
@@ -52,6 +53,7 @@ const App = () => {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Main" component={TabNavigator} />
+        <Stack.Screen name="CalorieResult" component={CalorieResult} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
