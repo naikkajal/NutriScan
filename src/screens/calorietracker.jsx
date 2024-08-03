@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 const TrackerScreen = () => {
   const [height, setHeight] = useState('');
@@ -11,9 +12,11 @@ const TrackerScreen = () => {
   const [activityLevel, setActivityLevel] = useState('');
   const [dailyCalorieIntake, setDailyCalorieIntake] = useState(null);
 
+  const navigation = useNavigation();
+
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http://192.168.1.103:5011/calculate', {
+      const response = await axios.post('http://192.168.1.104:5011/calculate', {
         height: Number(height),
         weight: Number(weight),
         age: Number(age),
@@ -21,6 +24,7 @@ const TrackerScreen = () => {
         activityLevel,
       });
       setDailyCalorieIntake(response.data.dailyCalorieIntake);
+      navigation.navigate('CalorieResult', { dailyCalorieIntake: response.data.dailyCalorieIntake });
     } catch (error) {
       console.error(error);
     }
@@ -28,7 +32,7 @@ const TrackerScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Tracker Screen</Text>
+      <Text style={styles.title}>Calculate Your Daily Calorie Intake</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Height (cm):</Text>
         <TextInput
@@ -63,13 +67,13 @@ const TrackerScreen = () => {
             style={[styles.radioButton, gender === 'male' && styles.radioButtonSelected]}
             onPress={() => setGender('male')}
           >
-            <Text style={styles.radioText}>Male</Text>
+            <Text style={[styles.radioText, gender === 'male' && styles.radioTextSelected]}>Male</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.radioButton, gender === 'female' && styles.radioButtonSelected]}
             onPress={() => setGender('female')}
           >
-            <Text style={styles.radioText}>Female</Text>
+            <Text style={[styles.radioText, gender === 'female' && styles.radioTextSelected]}>Female</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -100,9 +104,6 @@ const TrackerScreen = () => {
           <Text style={styles.buttonText}>Calculate Calorie Intake</Text>
         </LinearGradient>
       </TouchableOpacity>
-      {dailyCalorieIntake !== null && (
-        <Text style={styles.result}>Daily Calorie Intake: {dailyCalorieIntake} kcal</Text>
-      )}
     </ScrollView>
   );
 };
@@ -113,12 +114,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: 18,
   },
   title: {
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 24,
+    marginTop: 15,
   },
   inputContainer: {
     width: '100%',
@@ -151,6 +153,9 @@ const styles = StyleSheet.create({
   radioText: {
     color: '#000',
   },
+  radioTextSelected: {
+    color: '#fff',
+  },
   button: {
     width: '100%',
     marginTop: 16,
@@ -163,11 +168,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  result: {
-    marginTop: 16,
-    fontSize: 18,
     fontWeight: 'bold',
   },
 });
