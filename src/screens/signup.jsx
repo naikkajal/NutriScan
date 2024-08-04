@@ -32,7 +32,7 @@ const Signup = () => {
       .then(res => {
         if (res.data.status === 'ok') {
           Alert.alert('Success', 'Registered Successfully!');
-          navigation.navigate('Login');
+          navigation.navigate('UserDetails', { userId: res.data.userId });
         } else {
           Alert.alert('Error', JSON.stringify(res.data));
         }
@@ -113,7 +113,7 @@ const Signup = () => {
           
           <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginRedirect}>
             <Text style={styles.loginRedirectText}>
-              Already have an account? <Text style={styles.loginText}>Sign In</Text>
+              Already have an account? <Text style={{textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign In</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -176,11 +176,14 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     fontSize: 14,
-    color: '#007BFF',
+    color: 'mediumblue',
   },
   buttonContainer: {
-    marginVertical: 20,
-    marginHorizontal: 50,
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "530",
+    marginBottom: 20,
+    marginTop: 7,
   },
   gradientButton: {
     borderRadius: 50,
@@ -195,7 +198,7 @@ const styles = StyleSheet.create({
   },
   loginRedirect: {
     alignSelf: 'center',
-    marginVertical: 20,
+    marginTop: 100,
   },
   loginRedirectText: {
     fontSize: 16,

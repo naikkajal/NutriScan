@@ -10,7 +10,8 @@ import Login from './src/screens/login';
 import CaptureScreen from './src/screens/capture';
 import TrackerScreen from './src/screens/calorietracker';
 import SplashScreen from './src/screens/splashscreen'; 
-import CalorieResult from './src/screens/CalorieResult'; // Update import path if needed
+import CalorieResult from './src/screens/CalorieResult'; 
+import UserDetails from './src/screens/UserDetails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -52,6 +53,7 @@ const App = () => {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="UserDetails" component={UserDetails} />
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="CalorieResult" component={CalorieResult} /> 
       </Stack.Navigator>
