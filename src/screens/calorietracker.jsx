@@ -32,89 +32,90 @@ const TrackerScreen = () => {
     }
   };
 
+  const handleLogin = () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in both fields.');
+      return;
+    }
+    const loginData = { email, password };
+  
+    axios.post('http://192.168.1.104:5011/login', loginData)
+      .then(res => {
+        if (res.data.status === 'ok') {
+          if (res.data.profileCompleted) {
+            navigation.navigate('Home');
+          } else {
+            navigation.navigate('Main', { screen: 'Capture' });
+          }
+        } else {
+          Alert.alert('Error', JSON.stringify(res.data));
+        }
+      })
+      .catch(error => {
+        Alert.alert('Error', error.message);
+      });
+  };
+  
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Calculate Your Daily Calorie Intake</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Email:</Text>
-        <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Height (cm):</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={height}
-          onChangeText={setHeight}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Weight (kg):</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={weight}
-          onChangeText={setWeight}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Age:</Text>
-        <TextInput
-          style={styles.input}
-          keyboardType="numeric"
-          value={age}
-          onChangeText={setAge}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Gender:</Text>
-        <View style={styles.radioGroup}>
-          <TouchableOpacity
-            style={[styles.radioButton, gender === 'male' && styles.radioButtonSelected]}
-            onPress={() => setGender('male')}
-          >
-            <Text style={[styles.radioText, gender === 'male' && styles.radioTextSelected]}>Male</Text>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'} style={{ backgroundColor: 'white' }}>
+      <View style={styles.content}>
+        <Image source={require("../images/topimg.png")} style={styles.image} />
+        
+        <View style={styles.formContainer}>
+          <Text style={styles.signup}>Welcome Back</Text>
+          <Text style={styles.getstarted}>Log in to your account</Text>
+          
+          <View style={styles.inputContainer}>
+            <Fontisto name="email" size={20} color="black" style={styles.icon} />
+            <TextInput
+              accessibilityLabel="Email Input"
+              style={styles.inputText}
+              placeholder='Email'
+              placeholderTextColor={"#888"}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+          </View>
+          
+          <View style={styles.inputContainer}>
+            <Entypo name="lock" size={20} color="black" style={styles.icon} />
+            <TextInput
+              accessibilityLabel="Password Input"
+              style={styles.inputText}
+              placeholder='Password'
+              placeholderTextColor={"#888"}
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+          
+          <View style={styles.forgotPasswordContainer}>
+            <Text style={styles.forgotPassword}>Forgot your password?</Text>
+          </View>
+          
+          <TouchableOpacity onPress={handleLogin} style={styles.buttonContainer}>
+            <LinearGradient
+              colors={['#8A2BE2', '#FF1493']}
+              style={styles.gradientButton}
+              start={[0, 0]}
+              end={[1, 1]}
+            >
+              <Text style={styles.buttonText}>Login</Text>
+            </LinearGradient>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.radioButton, gender === 'female' && styles.radioButtonSelected]}
-            onPress={() => setGender('female')}
-          >
-            <Text style={[styles.radioText, gender === 'female' && styles.radioTextSelected]}>Female</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Activity Level:</Text>
-        <View style={styles.radioGroup}>
-          <TouchableOpacity
-            style={[styles.radioButton, activityLevel === 'sedentary' && styles.radioButtonSelected]}
-            onPress={() => setActivityLevel('sedentary')}
-          >
-            <Text style={styles.radioText}>Sedentary</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.radioButton, activityLevel === 'active' && styles.radioButtonSelected]}
-            onPress={() => setActivityLevel('active')}
-          >
-            <Text style={styles.radioText}>Active</Text>
+          
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.signupRedirect}>
+            <Text style={styles.signupRedirectText}>
+              Don't have an account? <Text style={{textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign Up</Text>
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
-      <LinearGradient colors={['#4c669f', '#3b5998', '#192f5d']} style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={calculateCalorieIntake}>
-          <Text style={styles.buttonText}>Calculate</Text>
-        </TouchableOpacity>
-      </LinearGradient>
-      {dailyCalorieIntake && (
-        <Text style={styles.result}>Your daily calorie intake should be around {dailyCalorieIntake} calories.</Text>
-      )}
     </ScrollView>
   );
-};
+};  
 
 const styles = StyleSheet.create({
   container: {
