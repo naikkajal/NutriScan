@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert 
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Picker } from '@react-native-picker/picker'; // Import Picker
+import { Picker } from '@react-native-picker/picker';
 
 const UserDetails = () => {
   const navigation = useNavigation();
@@ -13,10 +13,9 @@ const UserDetails = () => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [age, setAge] = useState('');
-  const [gender, setGender] = useState(''); // Default to empty string
-  const [activityLevel, setActivityLevel] = useState(''); // Default to empty string
+  const [gender, setGender] = useState('');
+  const [activityLevel, setActivityLevel] = useState('');
   const [email, setEmail] = useState('');
-  const [dailyCalorieIntake, setDailyCalorieIntake] = useState(null);
 
   const handleSaveDetails = () => {
     const userDetails = {
@@ -26,13 +25,14 @@ const UserDetails = () => {
       age,
       gender,
       activityLevel,
+      email, // Ensure email is included
     };
 
     axios.post('http://192.168.1.104:5011/userDetails', userDetails)
       .then(res => {
         if (res.data.status === 'ok') {
           Alert.alert('Success', 'Details Saved Successfully!');
-          navigation.navigate('Login');
+          navigation.navigate('CalorieTracker', { email }); // Pass email to CalorieTracker
         } else {
           Alert.alert('Error', JSON.stringify(res.data));
         }
@@ -41,28 +41,6 @@ const UserDetails = () => {
         Alert.alert('Error', error.message);
       });
   };
-
-  const calculateCalories = async () => {
-    try {
-      const response = await axios.post('http://192.168.1.104:5011/calculate', {
-        height: Number(height),
-        weight: Number(weight),
-        age: Number(age),
-        gender,
-        activityLevel,
-        email,
-      });
-      if (response.status === 200) {
-        setDailyCalorieIntake(response.data.dailyCalorieIntake);
-      } else {
-        Alert.alert('Error', 'Failed to calculate calories');
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', error.message);
-    }
-  };
-  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -135,18 +113,6 @@ const UserDetails = () => {
         </View>
       </View>
       
-      <LinearGradient colors={['#4c669f', '#3b5998', '#192f5d']} style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={calculateCalories}>
-          <Text style={styles.buttonText}>Calculate</Text>
-        </TouchableOpacity>
-      </LinearGradient>
-
-      {dailyCalorieIntake && (
-        <Text style={styles.result}>
-          Your daily calorie intake should be around {dailyCalorieIntake} calories.
-        </Text>
-      )}
-
       <TouchableOpacity onPress={handleSaveDetails} style={styles.buttonContainer}>
         <LinearGradient
           colors={['#8A2BE2', '#FF1493']}
@@ -200,8 +166,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginVertical: 20,
   },
-  button: {
-    paddingVertical: 15,
+  gradientButton: {
+    borderRadius: 50,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -209,19 +176,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
-  },
-  gradientButton: {
-    borderRadius: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  result: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
-    marginVertical: 15,
   },
 });
 

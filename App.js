@@ -12,6 +12,7 @@ import TrackerScreen from './src/screens/calorietracker';
 import SplashScreen from './src/screens/splashscreen'; 
 import CalorieResult from './src/screens/CalorieResult'; 
 import UserDetails from './src/screens/UserDetails';
+import CalorieTracker from './src/screens/calorietracker';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,10 +22,10 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          if (route.name === 'Tracker') {
-            return <Ionicons name="fast-food" size={size} color="white" />;
-          } else if (route.name === 'Capture') {
+          if (route.name === 'Capture') {
             return <Entypo name="camera" size={size} color={color} />;
+          } else if (route.name === 'Tracker') {
+            return <Ionicons name="fast-food" size={size} color={color} />;
           }
         },
         tabBarBackground: () => (
@@ -45,6 +46,7 @@ const TabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
 
 const App = () => {
   return (
