@@ -18,7 +18,7 @@ const TrackerScreen = () => {
 
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http://192.168.1.104:5011/calculate', {
+      const response = await axios.post('http://192.168.1.106:5011/calculate', {
         height: Number(height),
         weight: Number(weight),
         age: Number(age),
@@ -27,7 +27,7 @@ const TrackerScreen = () => {
         email,
       });
       setDailyCalorieIntake(response.data.dailyCalorieIntake);
-      navigation.navigate('CalorieResult', { dailyCalorieIntake: response.data.dailyCalorieIntake });
+      navigation.navigate('FoodItems', { dailyCalorieIntake: response.data.dailyCalorieIntake });
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'An error occurred while calculating calorie intake.');
