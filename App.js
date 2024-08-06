@@ -10,9 +10,9 @@ import Login from './src/screens/login';
 import CaptureScreen from './src/screens/capture';
 import TrackerScreen from './src/screens/calorietracker';
 import SplashScreen from './src/screens/splashscreen'; 
-import CalorieResult from './src/screens/CalorieResult'; 
+import FoodItems from './src/screens/FoodItems'; 
 import UserDetails from './src/screens/UserDetails';
-import CalorieTracker from './src/screens/calorietracker';
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -57,7 +57,7 @@ const App = () => {
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="UserDetails" component={UserDetails} />
         <Stack.Screen name="Main" component={TabNavigator} />
-        <Stack.Screen name="CalorieResult" component={CalorieResult} /> 
+        <Stack.Screen name="FoodItems" component={FoodItems} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
