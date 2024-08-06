@@ -21,7 +21,7 @@ const Login = () => {
           if (res.data.profileCompleted) {
             navigation.navigate('Main');
           } else {
-            navigation.navigate('Main', { screen: 'Capture' });
+            navigation.navigate('Main', { screen: 'Track' });
           }
         } else {
           Alert.alert('Error', JSON.stringify(res.data));

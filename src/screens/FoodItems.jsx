@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const FoodItems = ({ route }) => {
+const FoodItems = ({ route,navigation }) => {
   const { dailyCalorieIntake } = route.params;
 
   return (
@@ -22,7 +22,7 @@ const FoodItems = ({ route }) => {
         <View key={index} style={styles.section}>
           <Text style={styles.title}>{meal.title}</Text>
           <Text style={styles.subtitle}>{meal.subtitle}</Text>
-          <TouchableOpacity style={styles.plusIcon}>
+          <TouchableOpacity onPress={() => navigation.navigate('AddMeals')} style={styles.plusIcon}>
             <MaterialIcons name="add" size={24} color="purple" />
           </TouchableOpacity>
         </View>
