@@ -28,7 +28,7 @@ const Signup = () => {
       return Alert.alert('Invalid Admin');
     }
 
-    axios.post('http://192.168.1.106:5011/register', userData)
+    axios.post('http://192.168.169.199:5011/register', userData)
       .then(res => {
         if (res.data.status === 'ok') {
           Alert.alert('Success', 'Registered Successfully!');

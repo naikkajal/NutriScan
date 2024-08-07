@@ -28,7 +28,7 @@ const UserDetails = () => {
       email, // Ensure email is included
     };
 
-    axios.post('http://192.168.1.104:5011/userDetails', userDetails)
+    axios.post('http://192.168.1.106:5011/userDetails', userDetails)
       .then(res => {
         if (res.data.status === 'ok') {
           Alert.alert('Success', 'Details Saved Successfully!');
