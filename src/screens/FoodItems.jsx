@@ -1,16 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const FoodItems = ({ route,navigation }) => {
+const FoodItems = ({ route, navigation }) => {
   const { dailyCalorieIntake } = route.params;
+  const [selectedMeals, setSelectedMeals] = useState({
+    Breakfast: [],
+    "Morning Snack": [],
+    Lunch: [],
+    "Evening Snack": [],
+    Dinner: []
+  });
+
+  const addMealCalories = (mealTitle, calories) => {
+    setSelectedMeals((prevMeals) => ({
+      ...prevMeals,
+      [mealTitle]: [...prevMeals[mealTitle], calories]
+    }));
+    navigation.goBack();  // Go back to FoodItems screen
+  };
+
+  const renderSelectedMeals = (mealTitle) => {
+    const totalCalories = selectedMeals[mealTitle].reduce((acc, curr) => acc + curr, 0);
+    return (
+      <Text style={styles.caloriesText}>{totalCalories} Cal</Text>
+    );
+  };
+
+  const getTotalCalories = () => {
+    return Object.values(selectedMeals).flat().reduce((acc, curr) => acc + curr, 0);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.headerContainer}>
         <MaterialCommunityIcons name="silverware-fork-knife" size={26} color="black" />
         <Text style={styles.header}>Eat up to {dailyCalorieIntake} Cal</Text>
+      </View>
+      <View style={styles.totalCaloriesContainer}>
+        <Text style={styles.totalCaloriesText}>Total Calories: {getTotalCalories()} / {dailyCalorieIntake}</Text>
       </View>
       {[
         { title: 'Breakfast', subtitle: 'All you need is some breakfast 🌞🔍' },
@@ -20,9 +49,15 @@ const FoodItems = ({ route,navigation }) => {
         { title: 'Dinner', subtitle: 'Enjoy a hearty dinner 🍽️' },
       ].map((meal, index) => (
         <View key={index} style={styles.section}>
-          <Text style={styles.title}>{meal.title}</Text>
+          <View style={styles.mealHeader}>
+            <Text style={styles.title}>{meal.title}</Text>
+            {renderSelectedMeals(meal.title)}
+          </View>
           <Text style={styles.subtitle}>{meal.subtitle}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('AddMeals')} style={styles.plusIcon}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AddMeals', { addMealCalories: addMealCalories, mealTitle: meal.title })}
+            style={styles.plusIcon}
+          >
             <MaterialIcons name="add" size={24} color="purple" />
           </TouchableOpacity>
         </View>
@@ -40,16 +75,29 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'left',
+    justifyContent: 'flex-start',
     marginTop: 60,
     marginBottom: 40,
-    marginLeft:20
+    marginLeft: 20,
   },
   header: {
     fontSize: 25,
-    color: "black",
+    color: 'black',
     fontWeight: 'bold',
     marginLeft: 30,
+  },
+  totalCaloriesContainer: {
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  totalCaloriesText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'purple',
   },
   section: {
     backgroundColor: '#fff',
@@ -62,6 +110,11 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
     marginVertical: 15,
+  },
+  mealHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     fontSize: 18,
@@ -76,6 +129,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 15,
     top: 15,
+  },
+  caloriesText: {
+    fontSize: 16,
+    color: 'green',
   },
 });
 

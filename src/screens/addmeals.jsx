@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, FlatList } from 'react-native';
-import SpoonacularService from './SpoonacularService'; 
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, FlatList } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import SpoonacularService from './SpoonacularService';
 
-const AddMeals = () => {
+const AddMeals = ({ route, navigation }) => {
+  const { addMealCalories, mealTitle } = route.params;
   const [query, setQuery] = useState('');
   const [recipes, setRecipes] = useState([]);
 
@@ -26,6 +28,11 @@ const AddMeals = () => {
     }
   };
 
+  const handleAddMeal = (calories) => {
+    addMealCalories(mealTitle, calories);
+    navigation.goBack();  // Navigate back to FoodItems screen
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -34,7 +41,9 @@ const AddMeals = () => {
         value={query}
         onChangeText={setQuery}
       />
-      <Button title="Search" onPress={handleSearch} />
+      <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
+        <Text style={styles.searchButtonText}>Search</Text>
+      </TouchableOpacity>
       <FlatList
         data={recipes}
         keyExtractor={(item) => item.id.toString()}
@@ -47,6 +56,12 @@ const AddMeals = () => {
                 <Text>Carbs: {item.details.carbs}</Text>
                 <Text>Fat: {item.details.fat}</Text>
                 <Text>Protein: {item.details.protein}</Text>
+                <TouchableOpacity
+                  onPress={() => handleAddMeal(item.details.calories)}
+                  style={styles.addButton}
+                >
+                  <MaterialIcons name="add" size={24} color="purple" />
+                </TouchableOpacity>
               </>
             ) : (
               <Text>No nutritional information available</Text>
@@ -73,9 +88,26 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingLeft: 10,
   },
+  searchButton: {
+    backgroundColor: 'purple',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  searchButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
   recipeItem: {
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    marginBottom: 10,
+  },
+  addButton: {
+    marginTop: 10,
+    alignItems: 'center',
   },
 });
+
