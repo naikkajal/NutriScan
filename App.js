@@ -12,6 +12,7 @@ import TrackerScreen from './src/screens/calorietracker';
 import SplashScreen from './src/screens/splashscreen'; 
 import FoodItems from './src/screens/FoodItems'; 
 import UserDetails from './src/screens/UserDetails';
+import AddMeals from './src/screens/addmeals';
 
 
 const Stack = createNativeStackNavigator();
@@ -22,10 +23,10 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          if (route.name === 'Capture') {
-            return <Entypo name="camera" size={size} color={color} />;
-          } else if (route.name === 'Tracker') {
+          if (route.name === 'Track') {
             return <Ionicons name="fast-food" size={size} color={color} />;
+          } else if (route.name === 'Profile') {
+            return <Ionicons name="person" size={size} color={color} />;
           }
         },
         tabBarBackground: () => (
@@ -41,8 +42,8 @@ const TabNavigator = () => {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Capture" component={CaptureScreen} />
-      <Tab.Screen name="Tracker" component={TrackerScreen} />
+      <Tab.Screen name="Track" component={TrackerScreen} />
+      <Tab.Screen name="Profile" component={CaptureScreen} />
     </Tab.Navigator>
   );
 };
@@ -58,6 +59,8 @@ const App = () => {
         <Stack.Screen name="UserDetails" component={UserDetails} />
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="FoodItems" component={FoodItems} /> 
+        <Stack.Screen name="AddMeals" component={AddMeals} /> 
+        <Stack.Screen name="Capture" component={CaptureScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
