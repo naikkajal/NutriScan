@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   recipeItem: {
-    padding: 10,
+    padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
