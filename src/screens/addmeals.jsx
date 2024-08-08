@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import SpoonacularService from './SpoonacularService';
 
 const AddMeals = ({ route, navigation }) => {
   const { addMealCalories, mealTitle } = route.params;
   const [query, setQuery] = useState('');
   const [recipes, setRecipes] = useState([]);
+  const [error, setError] = useState('');
 
   const handleSearch = async () => {
+    setError('');  // Reset error message
     try {
       const data = await SpoonacularService.searchRecipes(query);
       const detailedRecipes = await Promise.all(
@@ -25,6 +28,7 @@ const AddMeals = ({ route, navigation }) => {
       setRecipes(detailedRecipes);
     } catch (error) {
       console.error(error);
+      setError(error.message);
     }
   };
 
@@ -35,6 +39,9 @@ const AddMeals = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View>
+        <Text style={styles.search}>Search For Food</Text>
+      </View>
       <TextInput
         style={styles.foodinput}
         placeholder='Add food'
@@ -44,6 +51,7 @@ const AddMeals = ({ route, navigation }) => {
       <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <FlatList
         data={recipes}
         keyExtractor={(item) => item.id.toString()}
@@ -69,19 +77,33 @@ const AddMeals = ({ route, navigation }) => {
           </View>
         )}
       />
+      <TouchableOpacity onPress={() => navigation.navigate('Capture')} style={styles.cameraButton} >
+        <LinearGradient
+          colors={['#8A2BE2', '#FF1493']}
+          style={styles.gradientButton}
+          start={[0, 0]}
+          end={[1, 1]}
+        >
+          <MaterialIcons name="camera-alt" size={28} color="white" />
+        </LinearGradient>
+      </TouchableOpacity>
     </View>
   );
 };
-
-export default AddMeals;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
   },
+  search: {
+    marginTop: 60,
+    fontSize: 22,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
   foodinput: {
-    marginTop: 50,
+    marginTop: 30,
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
@@ -99,6 +121,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+  errorText: {
+    color: 'red',
+    marginBottom: 20,
+  },
   recipeItem: {
     padding: 12,
     borderBottomWidth: 1,
@@ -109,5 +135,26 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
+  cameraButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gradientButton: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    marginBottom:20,
+    marginRight:20
+  },
 });
 
+export default AddMeals;

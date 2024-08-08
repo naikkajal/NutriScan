@@ -14,22 +14,31 @@ const FoodItems = ({ route, navigation }) => {
   });
 
   const addMealCalories = (mealTitle, calories) => {
+    // Ensure calories are added as numbers
+    const calorieValue = parseFloat(calories);
     setSelectedMeals((prevMeals) => ({
       ...prevMeals,
-      [mealTitle]: [...prevMeals[mealTitle], calories]
+      [mealTitle]: [...prevMeals[mealTitle], calorieValue]
     }));
-    navigation.goBack();  // Go back to FoodItems screen
+  };
+
+  const formatCalories = (calories) => {
+    // Ensure the result is a string with no leading zeroes
+    return calories > 0 ? calories.toString().replace(/^0+/, '') : '0';
   };
 
   const renderSelectedMeals = (mealTitle) => {
-    const totalCalories = selectedMeals[mealTitle].reduce((acc, curr) => acc + curr, 0);
+    // Convert all calories to numbers and sum them up
+    const totalCalories = selectedMeals[mealTitle].reduce((acc, curr) => acc + parseFloat(curr), 0);
     return (
-      <Text style={styles.caloriesText}>{totalCalories} Cal</Text>
+      <Text style={styles.caloriesText}>{formatCalories(totalCalories)} Cal</Text>
     );
   };
 
   const getTotalCalories = () => {
-    return Object.values(selectedMeals).flat().reduce((acc, curr) => acc + curr, 0);
+    // Flatten all meals' calorie arrays, convert to numbers, sum them up, and format the total
+    const total = Object.values(selectedMeals).flat().reduce((acc, curr) => acc + parseFloat(curr), 0);
+    return formatCalories(total);
   };
 
   return (
@@ -55,7 +64,7 @@ const FoodItems = ({ route, navigation }) => {
           </View>
           <Text style={styles.subtitle}>{meal.subtitle}</Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate('AddMeals', { addMealCalories: addMealCalories, mealTitle: meal.title })}
+            onPress={() => navigation.navigate('AddMeals', { addMealCalories, mealTitle: meal.title })}
             style={styles.plusIcon}
           >
             <MaterialIcons name="add" size={24} color="purple" />
@@ -126,13 +135,15 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   plusIcon: {
+    marginRight: 10,
     position: 'absolute',
-    right: 15,
-    top: 15,
+    right: 0,
+    marginTop:16
   },
   caloriesText: {
     fontSize: 16,
     color: 'green',
+    marginRight:50
   },
 });
 

@@ -11,7 +11,6 @@ import CaptureScreen from './src/screens/capture';
 import TrackerScreen from './src/screens/calorietracker';
 import SplashScreen from './src/screens/splashscreen'; 
 import FoodItems from './src/screens/FoodItems'; 
-import UserDetails from './src/screens/UserDetails';
 import AddMeals from './src/screens/addmeals';
 
 
@@ -56,7 +55,6 @@ const App = () => {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen name="UserDetails" component={UserDetails} />
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="FoodItems" component={FoodItems} /> 
         <Stack.Screen name="AddMeals" component={AddMeals} /> 
