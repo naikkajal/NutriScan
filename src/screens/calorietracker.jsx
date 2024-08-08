@@ -18,7 +18,7 @@ const TrackerScreen = () => {
 
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http://192.168.1.106:5011/calculate', {
+      const response = await axios.post('http://192.168.1.105:5011/calculate', {
         height: Number(height),
         weight: Number(weight),
         age: Number(age),

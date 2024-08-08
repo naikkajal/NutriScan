@@ -15,7 +15,7 @@ const Login = () => {
   const handleLogin = () => {
     const loginData = { email, password };
 
-    axios.post('http://192.168.1.106:5011/login', loginData)
+    axios.post('http://192.168.1.105:5011/login', loginData)
       .then(res => {
         if (res.data.status === 'ok') {
           if (res.data.profileCompleted) {

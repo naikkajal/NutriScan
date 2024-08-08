@@ -28,11 +28,11 @@ const Signup = () => {
       return Alert.alert('Invalid Admin');
     }
 
-    axios.post('http://192.168.169.199:5011/register', userData)
+    axios.post('http://192.168.1.105:5011/register', userData)
       .then(res => {
         if (res.data.status === 'ok') {
           Alert.alert('Success', 'Registered Successfully!');
-          navigation.navigate('UserDetails', { userId: res.data.userId });
+          navigation.navigate('Main', { screen: 'Track' }, { userId: res.data.userId });
         } else {
           Alert.alert('Error', JSON.stringify(res.data));
         }
