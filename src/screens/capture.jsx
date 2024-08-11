@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const CaptureScreen = () => {
   const [image, setImage] = useState(null);
+  const [prediction, setPrediction] = useState(null);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -19,8 +21,6 @@ const CaptureScreen = () => {
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -40,12 +40,44 @@ const CaptureScreen = () => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
   };
+
+  const uploadImage = async () => {
+    if (!image) {
+      console.error('No image selected');
+      return;
+    }
+  
+    const localUri = image;
+    const filename = localUri.split('/').pop();
+    const formData = new FormData();
+    formData.append('file', {
+      uri: localUri,
+      name: filename,
+      type: 'image/jpeg', 
+    });
+  
+    console.log('Sending image:', filename);
+  
+    try {
+      const response = await axios.post('http://192.168.1.103:5000/predict', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Response from server:', response.data);
+      setPrediction(response.data.predictions);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      if (error.response) {
+        console.error('Server responded with:', error.response.data);
+      }
+    }
+  };
+  
 
   return (
     <View style={styles.container}>
@@ -68,11 +100,17 @@ const CaptureScreen = () => {
           </TouchableOpacity>
         </View>
       )}
+      {image && (
+        <Button title="Predict" onPress={uploadImage} />
+      )}
+      {prediction && (
+        <View style={styles.predictionContainer}>
+          <Text>Predictions: {JSON.stringify(prediction)}</Text>
+        </View>
+      )}
     </View>
   );
 };
-
-export default CaptureScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -115,4 +153,9 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 10,
   },
+  predictionContainer: {
+    marginTop: 20,
+  },
 });
+
+export default CaptureScreen;
