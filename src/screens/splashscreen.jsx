@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 15,
-    color: '#E6F7FF', // Dark blue text color
+    color: '#E6F7FF', 
     textAlign: 'center',
    
   },

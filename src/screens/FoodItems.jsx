@@ -14,7 +14,6 @@ const FoodItems = ({ route, navigation }) => {
   });
 
   const addMealCalories = (mealTitle, calories) => {
-    // Ensure calories are added as numbers
     const calorieValue = parseFloat(calories);
     setSelectedMeals((prevMeals) => ({
       ...prevMeals,
@@ -23,12 +22,10 @@ const FoodItems = ({ route, navigation }) => {
   };
 
   const formatCalories = (calories) => {
-    // Ensure the result is a string with no leading zeroes
     return calories > 0 ? calories.toString().replace(/^0+/, '') : '0';
   };
 
   const renderSelectedMeals = (mealTitle) => {
-    // Convert all calories to numbers and sum them up
     const totalCalories = selectedMeals[mealTitle].reduce((acc, curr) => acc + parseFloat(curr), 0);
     return (
       <Text style={styles.caloriesText}>{formatCalories(totalCalories)} Cal</Text>
@@ -36,7 +33,6 @@ const FoodItems = ({ route, navigation }) => {
   };
 
   const getTotalCalories = () => {
-    // Flatten all meals' calorie arrays, convert to numbers, sum them up, and format the total
     const total = Object.values(selectedMeals).flat().reduce((acc, curr) => acc + parseFloat(curr), 0);
     return formatCalories(total);
   };
