@@ -5,10 +5,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import SpoonacularService from './SpoonacularService';
 
 const AddMeals = ({ route, navigation }) => {
+  console.log(route);
+  console.log(navigation);
   const { addMealCalories, mealTitle } = route.params;
+  console.log("after addMeal1r");
   const [query, setQuery] = useState('');
+  console.log("after addMeal2");
   const [recipes, setRecipes] = useState([]);
+  console.log("after addMeal3");
   const [error, setError] = useState('');
+  console.log("after addMeal4");
 
   const handleSearch = async () => {
     setError('');  // Reset error message

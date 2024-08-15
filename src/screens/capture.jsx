@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 const CaptureScreen = () => {
@@ -51,33 +50,32 @@ const CaptureScreen = () => {
       return;
     }
   
-    const localUri = image;
-    const filename = localUri.split('/').pop();
-    const formData = new FormData();
-    formData.append('file', {
-      uri: localUri,
-      name: filename,
-      type: 'image/jpeg', 
-    });
-  
-    console.log('Sending image:', filename);
-  
     try {
-      const response = await axios.post('http://192.168.1.103:5000/predict', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const localUri = image;
+      const filename = localUri.split('/').pop();
+      const formData = new FormData();
+      formData.append('file', {
+        uri: localUri,
+        name: filename,
+        type: 'image/jpeg',
       });
-      console.log('Response from server:', response.data);
-      setPrediction(response.data.predictions);
+  
+      const response = await fetch('http://192.168.0.122:5000/predict', {  // Replace with your local IP
+        method: 'POST',
+        body: formData
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log('Response from server:', data);
+      setPrediction(data.prediction);
     } catch (error) {
       console.error('Error uploading image:', error);
-      if (error.response) {
-        console.error('Server responded with:', error.response.data);
-      }
     }
   };
-  
 
   return (
     <View style={styles.container}>

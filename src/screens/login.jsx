@@ -1,4 +1,3 @@
-// src/screens/Login.js
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -11,12 +10,14 @@ const Login = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  console.log(email);
   const handleLogin = () => {
     const loginData = { email, password };
+    console.log("outside login");
 
-    axios.post('http://192.168.1.103:5011/login', loginData)
+    axios.post('http://192.168.0.122:5011/login', loginData)
       .then(res => {
+        console.log("inside login");
         if (res.data.status === 'ok') {
           if (res.data.profileCompleted) {
             navigation.navigate('Main');
@@ -28,7 +29,7 @@ const Login = () => {
         }
       })
       .catch(error => {
-        Alert.alert('Error', error.message);
+        Alert.alert('Error outer login', error.message);
       });
   };
 
