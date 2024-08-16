@@ -1,9 +1,9 @@
-NutriScan-Nutritional Analysis App
+NutriScan-Nutritional Analysis App:
 
 NutriScan is a mobile application designed to help users track their daily caloric intake by identifying food items through image recognition and retrieving nutritional information. The app allows users to manage their meals, track calories, and maintain a healthy diet.
 
 
-Features
+Features:
 
 1.Image Recognition: Use the camera or gallery to capture food images and predict the calories of food items
 
@@ -16,7 +16,7 @@ Features
 5.Profile Management: Update profile details and manage your account settings.
 
 
-Tech Stack
+Tech Stack:
 
 Frontend: React Native (Expo)
 
