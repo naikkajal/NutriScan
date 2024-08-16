@@ -15,7 +15,7 @@ const Login = () => {
     const loginData = { email, password };
     console.log("outside login");
 
-    axios.post('http://192.168.0.122:5011/login', loginData)
+    axios.post('http://192.168.249.199:5011/login', loginData)
       .then(res => {
         console.log("inside login");
         if (res.data.status === 'ok') {

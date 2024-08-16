@@ -12,6 +12,7 @@ import TrackerScreen from './src/screens/calorietracker';
 import SplashScreen from './src/screens/splashscreen'; 
 import FoodItems from './src/screens/FoodItems'; 
 import AddMeals from './src/screens/addmeals';
+import Profilescreen from './src/screens/profilescreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -42,7 +43,7 @@ const TabNavigator = () => {
       })}
     >
       <Tab.Screen name="Track" component={TrackerScreen} />
-      <Tab.Screen name="Profile" component={CaptureScreen} />
+      <Tab.Screen name="Profile" component={Profilescreen} />
     </Tab.Navigator>
   );
 };
@@ -58,7 +59,7 @@ const App = () => {
         <Stack.Screen name="Main" component={TabNavigator} />
         <Stack.Screen name="FoodItems" component={FoodItems} /> 
         <Stack.Screen name="AddMeals" component={AddMeals} /> 
-        <Stack.Screen name="Capture" component={CaptureScreen} />
+        <Stack.Screen name="CaptureScreen" component={CaptureScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

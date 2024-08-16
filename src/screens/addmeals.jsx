@@ -17,7 +17,7 @@ const AddMeals = ({ route, navigation }) => {
   console.log("after addMeal4");
 
   const handleSearch = async () => {
-    setError('');  // Reset error message
+    setError('');  
     try {
       const data = await SpoonacularService.searchRecipes(query);
       const detailedRecipes = await Promise.all(
@@ -40,7 +40,7 @@ const AddMeals = ({ route, navigation }) => {
 
   const handleAddMeal = (calories) => {
     addMealCalories(mealTitle, calories);
-    navigation.goBack();  // Navigate back to FoodItems screen
+    navigation.goBack();  
   };
 
   return (

@@ -18,7 +18,7 @@ const TrackerScreen = () => {
 
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http://192.168.0.122:5011/calculate', {
+      const response = await axios.post('http:/192.168.249.199:5011/calculate', {
         height: Number(height),
         weight: Number(weight),
         age: Number(age),
@@ -39,17 +39,6 @@ const TrackerScreen = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Track Your Daily Calorie Intake</Text>
         
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder='Email'
-            placeholderTextColor="#888"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-        </View>
         
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Height (cm)</Text>
@@ -144,12 +133,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 40,
     textAlign: 'center',
-    marginTop:50
+    marginTop:50,
+    textDecorationLine:"underline"
   },
   inputContainer: {
     marginBottom: 15,
+    marginTop:10
   },
   label: {
     fontSize: 16,
@@ -182,6 +173,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop:25
   },
   buttonText: {
     color: '#fff',
