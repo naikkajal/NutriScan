@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const FoodItems = ({ route, navigation }) => {
-  const { dailyCalorieIntake } = route.params;
+  const { dailyCalorieIntake } = route.params || {}; // Default to empty object
   const [selectedMeals, setSelectedMeals] = useState({
     Breakfast: [],
     "Morning Snack": [],
@@ -13,12 +12,29 @@ const FoodItems = ({ route, navigation }) => {
     Dinner: []
   });
 
+  useEffect(() => {
+    if (route.params?.calories && route.params?.mealTitle) {
+      const { mealTitle, calories } = route.params;
+      addMealCalories(mealTitle, calories);
+    }
+  }, [route.params?.calories, route.params?.mealTitle]);
+
   const addMealCalories = (mealTitle, calories) => {
-    const calorieValue = parseFloat(calories);
-    setSelectedMeals((prevMeals) => ({
-      ...prevMeals,
-      [mealTitle]: [...prevMeals[mealTitle], calorieValue]
-    }));
+    if (calories) {
+      const calorieValue = parseFloat(calories);
+      setSelectedMeals((prevMeals) => ({
+        ...prevMeals,
+        [mealTitle]: [...prevMeals[mealTitle], calorieValue]
+      }));
+    }
+  };
+
+  const navigateToCaptureScreen = (mealTitle) => {
+    navigation.navigate('CaptureScreen', {
+      addMealCalories: addMealCalories,
+      mealTitle: mealTitle,
+      dailyCalorieIntake: dailyCalorieIntake, // Pass dailyCalorieIntake
+    });
   };
 
   const formatCalories = (calories) => {
@@ -59,12 +75,20 @@ const FoodItems = ({ route, navigation }) => {
             {renderSelectedMeals(meal.title)}
           </View>
           <Text style={styles.subtitle}>{meal.subtitle}</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('AddMeals', { addMealCalories, mealTitle: meal.title })}
-            style={styles.plusIcon}
-          >
-            <MaterialIcons name="add" size={24} color="purple" />
-          </TouchableOpacity>
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              onPress={() => navigateToCaptureScreen(meal.title)}
+              style={styles.plusIcon}
+            >
+              <MaterialIcons name="camera-alt" size={24} color="purple" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AddMeals', { addMealCalories, mealTitle: meal.title, dailyCalorieIntake })}
+              style={styles.plusIcon}
+            >
+              <MaterialIcons name="add" size={24} color="purple" />
+            </TouchableOpacity>
+          </View>
         </View>
       ))}
     </ScrollView>
@@ -130,16 +154,18 @@ const styles = StyleSheet.create({
     color: '#555',
     marginTop: 15,
   },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 16,
+  },
   plusIcon: {
     marginRight: 10,
-    position: 'absolute',
-    right: 0,
-    marginTop:16
   },
   caloriesText: {
     fontSize: 16,
     color: 'green',
-    marginRight:50
+    marginRight: 10,
   },
 });
 

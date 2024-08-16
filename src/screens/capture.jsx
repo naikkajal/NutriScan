@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import SpoonacularService from './SpoonacularService';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const CaptureScreen = () => {
+const CaptureScreen = ({ route, navigation }) => {
+  const { addMealCalories, mealTitle, dailyCalorieIntake } = route.params || {};
   const [image, setImage] = useState(null);
   const [prediction, setPrediction] = useState(null);
+  const [nutritionInfo, setNutritionInfo] = useState(null);
+  const [showPredictButton, setShowPredictButton] = useState(true); // Manage button visibility
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -44,12 +50,26 @@ const CaptureScreen = () => {
     }
   };
 
+  const handleAddMeal = () => {
+    if (nutritionInfo && addMealCalories) {
+      console.log('Adding meal calories:', mealTitle, nutritionInfo.calories);
+      addMealCalories(mealTitle, nutritionInfo.calories);
+      navigation.navigate('FoodItems', {
+        mealTitle: mealTitle,
+        calories: nutritionInfo.calories,
+        dailyCalorieIntake: dailyCalorieIntake,
+      });
+    } else {
+      console.log('No nutrition info or addMealCalories function available.');
+    }
+  };
+
   const uploadImage = async () => {
     if (!image) {
       console.error('No image selected');
       return;
     }
-  
+
     try {
       const localUri = image;
       const filename = localUri.split('/').pop();
@@ -59,19 +79,31 @@ const CaptureScreen = () => {
         name: filename,
         type: 'image/jpeg',
       });
-  
-      const response = await fetch('http://192.168.0.122:5000/predict', {  // Replace with your local IP
+
+      const response = await fetch('http://192.168.249.199:5000/predict', { 
         method: 'POST',
-        body: formData
+        body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const data = await response.json();
       console.log('Response from server:', data);
       setPrediction(data.prediction);
+      setShowPredictButton(false); // Hide the button after prediction
+
+      const searchResults = await SpoonacularService.searchRecipes(data.prediction);
+      console.log('Search results:', searchResults);
+      if (searchResults.results.length > 0) {
+        const firstRecipeId = searchResults.results[0].id;
+        const nutritionDetails = await SpoonacularService.getRecipeDetails(firstRecipeId);
+        console.log('Nutrition details:', nutritionDetails);
+        setNutritionInfo(nutritionDetails);
+      } else {
+        setNutritionInfo({ error: 'No nutritional information available.' });
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
     }
@@ -79,31 +111,65 @@ const CaptureScreen = () => {
 
   return (
     <View style={styles.container}>
-      {!image && <Text style={styles.title}>Click/Select Image</Text>}
+      <Text style={styles.title}>Capture Your Meal</Text>
       <View style={styles.imageContainer}>
-        {!image && (
-          <TouchableOpacity onPress={takePhoto} style={styles.cameraIcon}>
-            <Ionicons name="camera" size={50} color="black" />
+        {image ? (
+          <Image source={{ uri: image }} style={styles.image} />
+        ) : (
+          <TouchableOpacity onPress={takePhoto} style={styles.cameraContainer}>
+            <Ionicons name="camera" size={50} color="gray" />
           </TouchableOpacity>
         )}
-        {image && <Image source={{ uri: image }} style={styles.image} />}
       </View>
-      {!image && (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={takePhoto} style={styles.iconButton}>
-            <Ionicons name="camera" size={32} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
-            <Ionicons name="images" size={32} color="black" />
-          </TouchableOpacity>
-        </View>
-      )}
+      <View style={styles.iconRow}>
+        <TouchableOpacity onPress={takePhoto} style={styles.iconButton}>
+          <Ionicons name="camera" size={30} color="purple" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
+          <Ionicons name="image" size={30} color="purple" />
+        </TouchableOpacity>
+      </View>
       {image && (
-        <Button title="Predict" onPress={uploadImage} />
-      )}
-      {prediction && (
-        <View style={styles.predictionContainer}>
-          <Text>Predictions: {JSON.stringify(prediction)}</Text>
+        <View>
+          {showPredictButton && (
+            <TouchableOpacity onPress={uploadImage}>
+              <LinearGradient
+                colors={['#8A2BE2', '#FF1493']}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.predictButton}
+              >
+                <Text style={styles.predictButtonText}>Predict</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+          {!showPredictButton && prediction && (
+            <View>
+              <Text style={styles.predictionText}>{prediction}</Text>
+              {nutritionInfo && (
+                <View>
+                  <Text style={styles.nutritionInfo}>Calories: {nutritionInfo.calories}</Text>
+                  <Text style={styles.nutritionInfo}>Carbs: {nutritionInfo.carbs}</Text>
+                  <Text style={styles.nutritionInfo}>Fat: {nutritionInfo.fat}</Text>
+                  <Text style={styles.nutritionInfo}>Protein: {nutritionInfo.protein}</Text>
+                  {nutritionInfo.error && <Text style={styles.nutritionInfo}>{nutritionInfo.error}</Text>}
+                </View>
+              )}
+              {nutritionInfo && !nutritionInfo.error && (
+                <TouchableOpacity onPress={handleAddMeal} style={styles.addMealButton}>
+                  <LinearGradient
+                    colors={['#8A2BE2', '#FF1493']}
+                    start={[0, 0]}
+                    end={[1, 1]}
+                    style={styles.addMealButtonGradient}
+                  >
+                    <MaterialIcons name="add" size={24} color="white" />
+                    <Text style={styles.addMealButtonText}>Add Meal</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
         </View>
       )}
     </View>
@@ -113,46 +179,81 @@ const CaptureScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#f7f7f7',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 20,
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 35, // Moved down by 15 units
   },
   imageContainer: {
-    width: '100%',
-    height: 300,
-    backgroundColor: '#d3d3d3',
-    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    width: '100%',
+    justifyContent: 'center',
+    height: 200,
+  },
+  cameraContainer: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#f0f0f0',
     borderRadius: 10,
-  },
-  cameraIcon: {
-    position: 'absolute',
-    zIndex: 1,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '60%',
-    marginTop: 20,
-  },
-  iconButton: {
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     width: '100%',
     height: '100%',
     borderRadius: 10,
   },
-  predictionContainer: {
-    marginTop: 20,
+  iconRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginVertical: 10,
+  },
+  iconButton: {
+    padding: 10,
+  },
+  predictButton: {
+    padding: 15,
+    borderRadius: 5,
+    marginVertical: 20,
+    alignItems: 'center',
+  },
+  predictButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  predictionText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  nutritionInfo: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  addMealButton: {
+    borderRadius: 5,
+    overflow: 'hidden', // Ensure the gradient does not overflow the button
+    marginVertical: 20,
+  },
+  addMealButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 5,
+    width: '100%',
+    justifyContent: 'center',
+  },
+  addMealButtonText: {
+    color: 'white',
+    fontSize: 16,
+    marginLeft: 10,
   },
 });
 
