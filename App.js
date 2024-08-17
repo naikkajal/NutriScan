@@ -12,7 +12,7 @@ import TrackerScreen from './src/screens/calorietracker';
 import SplashScreen from './src/screens/splashscreen'; 
 import FoodItems from './src/screens/FoodItems'; 
 import AddMeals from './src/screens/addmeals';
-import Profilescreen from './src/screens/profilescreen';
+import Profilescreen from './src/screens/ProfileScreen';
 
 
 const Stack = createNativeStackNavigator();
