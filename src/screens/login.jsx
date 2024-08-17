@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   signupRedirectText: {
     fontSize: 16,
-    fontWeight: "300",
+    fontWeight: "301",
     textAlign: "center",
   },
   signupText: {
