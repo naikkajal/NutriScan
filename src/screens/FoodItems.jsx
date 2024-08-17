@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const FoodItems = ({ route, navigation }) => {
-  const { dailyCalorieIntake } = route.params || {}; // Default to empty object
+  const { dailyCalorieIntake } = route.params || {}; 
   const [selectedMeals, setSelectedMeals] = useState({
     Breakfast: [],
     "Morning Snack": [],
@@ -33,7 +33,7 @@ const FoodItems = ({ route, navigation }) => {
     navigation.navigate('CaptureScreen', {
       addMealCalories: addMealCalories,
       mealTitle: mealTitle,
-      dailyCalorieIntake: dailyCalorieIntake, // Pass dailyCalorieIntake
+      dailyCalorieIntake: dailyCalorieIntake, 
     });
   };
 

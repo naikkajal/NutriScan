@@ -40,7 +40,6 @@ const Profilescreen = () => {
         <View style={styles.infoItem}>
           <Text style={styles.infoLabel}>Email:</Text>
           <Text style={styles.infoText}>sanikayovi@gmail.com</Text>
-          {/* Removed the edit icon for email */}
         </View>
       </View>
       <View style={styles.optionsContainer}>
@@ -77,20 +76,20 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     alignItems: 'center',
-    marginVertical: 30, // Moved down
-    position: 'relative', // Required for absolute positioning of the plus icon
+    marginVertical: 30, 
+    position: 'relative', 
   },
   avatar: {
-    width: 120, // Increased size
-    height: 120, // Increased size
-    borderRadius: 60, // Increased border radius
+    width: 120, 
+    height: 120, 
+    borderRadius: 60, 
     borderWidth: 3,
     borderColor: 'white',
   },
   addButton: {
     position: 'absolute',
-    bottom: -10, // Move the button below the bottom of the container
-    right: -10, // Move the button to the right of the container
+    bottom: -10, 
+    right: -10, 
     backgroundColor: '#FF1493',
     borderRadius: 50,
     width: 40,
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     backgroundColor: '#9400d3',
-    marginTop: 60, // Added space between Manage Your Account and Logout
+    marginTop: 60, 
   },
   logoutText: {
     fontSize: 16,

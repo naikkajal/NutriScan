@@ -35,5 +35,4 @@ yarn-error.*
 *.tsbuildinfo
 
 screens/SpoonacularService.jsx
-
 screens/profilescreen.jsx
