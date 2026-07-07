@@ -5,6 +5,7 @@ import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Fontisto } from '@expo/vector-icons';
+import { BASE_URL } from '../api/config';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -15,7 +16,7 @@ const Login = () => {
     const loginData = { email, password };
     console.log("outside login");
 
-    axios.post('http://192.168.249.199:5011/login', loginData)
+    axios.post(`${BASE_URL}/login`, loginData)
       .then(res => {
         console.log("inside login");
         if (res.data.status === 'ok') {
@@ -37,11 +38,11 @@ const Login = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'} style={{ backgroundColor: 'white' }}>
       <View style={styles.content}>
         <Image source={require("../images/topimg.png")} style={styles.image} />
-        
+
         <View style={styles.formContainer}>
           <Text style={styles.signup}>Welcome Back</Text>
           <Text style={styles.getstarted}>Log in to your account</Text>
-          
+
           <View style={styles.inputContainer}>
             <Fontisto name="email" size={20} color="black" style={styles.icon} />
             <TextInput
@@ -52,7 +53,7 @@ const Login = () => {
               onChangeText={setEmail}
             />
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Entypo name="lock" size={20} color="black" style={styles.icon} />
             <TextInput
@@ -64,11 +65,11 @@ const Login = () => {
               onChangeText={setPassword}
             />
           </View>
-          
+
           <View style={styles.forgotPasswordContainer}>
             <Text style={styles.forgotPassword}>Forgot your password?</Text>
           </View>
-          
+
           <TouchableOpacity onPress={handleLogin} style={styles.buttonContainer}>
             <LinearGradient
               colors={['#8A2BE2', '#FF1493']}
@@ -79,10 +80,10 @@ const Login = () => {
               <Text style={styles.buttonText}>Login</Text>
             </LinearGradient>
           </TouchableOpacity>
-          
+
           <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.signupRedirect}>
             <Text style={styles.signupRedirectText}>
-              Don't have an account? <Text style={{textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign Up</Text>
+              Don't have an account? <Text style={{ textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign Up</Text>
             </Text>
           </TouchableOpacity>
         </View>

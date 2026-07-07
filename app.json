@@ -4,7 +4,8 @@
     "slug": "foodapp",
     "version": "1.0.0",
     "android": {
-      "enableHermes": true
+      "enableHermes": false,
+      "package": "com.foodapp"
     }
   }
 }
