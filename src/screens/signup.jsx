@@ -5,6 +5,7 @@ import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import Entypo from '@expo/vector-icons/Entypo';
 import { Fontisto } from '@expo/vector-icons';
+import { BASE_URL } from '../api/config';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -28,7 +29,7 @@ const Signup = () => {
       return Alert.alert('Invalid Admin');
     }
 
-    axios.post('http://192.168.249.199:5011/register', userData)
+    axios.post(`${BASE_URL}/register`, userData)
       .then(res => {
         if (res.data.status === 'ok') {
           Alert.alert('Success', 'Registered Successfully!');
@@ -46,11 +47,11 @@ const Signup = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'} style={{ backgroundColor: 'white' }}>
       <View style={styles.content}>
         <Image source={require("../images/topimg.png")} style={styles.image} />
-        
+
         <View style={styles.formContainer}>
           <Text style={styles.signup}>Create Account</Text>
           <Text style={styles.getstarted}>Just a few quick things to get started</Text>
-          
+
           <View style={styles.inputContainer}>
             <Entypo name="user" size={20} color="black" style={styles.icon} />
             <TextInput
@@ -61,7 +62,7 @@ const Signup = () => {
               onChangeText={setName}
             />
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Fontisto name="email" size={20} color="black" style={styles.icon} />
             <TextInput
@@ -72,7 +73,7 @@ const Signup = () => {
               onChangeText={setEmail}
             />
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Entypo name="mobile" size={20} color="black" style={styles.icon} />
             <TextInput
@@ -83,7 +84,7 @@ const Signup = () => {
               onChangeText={setMobile}
             />
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Entypo name="lock" size={20} color="black" style={styles.icon} />
             <TextInput
@@ -95,11 +96,11 @@ const Signup = () => {
               onChangeText={setPassword}
             />
           </View>
-          
+
           <View style={styles.forgotPasswordContainer}>
             <Text style={styles.forgotPassword}>Forgot your password?</Text>
           </View>
-          
+
           <TouchableOpacity onPress={handleRegister} style={styles.buttonContainer}>
             <LinearGradient
               colors={['#8A2BE2', '#FF1493']}
@@ -110,10 +111,10 @@ const Signup = () => {
               <Text style={styles.buttonText}>Sign Up</Text>
             </LinearGradient>
           </TouchableOpacity>
-          
+
           <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginRedirect}>
             <Text style={styles.loginRedirectText}>
-              Already have an account? <Text style={{textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign In</Text>
+              Already have an account? <Text style={{ textDecorationLine: "underline", color: "darkblue", fontWeight: "bold" }}>Sign In</Text>
             </Text>
           </TouchableOpacity>
         </View>

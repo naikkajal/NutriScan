@@ -5,6 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import SpoonacularService from './SpoonacularService';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BASE_URL } from '../api/config';
 
 const CaptureScreen = ({ route, navigation }) => {
   const { addMealCalories, mealTitle, dailyCalorieIntake } = route.params || {};
@@ -80,7 +81,7 @@ const CaptureScreen = ({ route, navigation }) => {
         type: 'image/jpeg',
       });
 
-      const response = await fetch('http://192.168.249.199:5000/predict', { 
+      const response = await fetch(`${BASE_URL}/predict`, {
         method: 'POST',
         body: formData,
       });

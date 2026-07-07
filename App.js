@@ -1,18 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Signup from './src/screens/signup';
 import Login from './src/screens/login';
 import CaptureScreen from './src/screens/capture';
 import TrackerScreen from './src/screens/calorietracker';
-import SplashScreen from './src/screens/splashscreen'; 
-import FoodItems from './src/screens/FoodItems'; 
+import SplashScreen from './src/screens/splashscreen';
+import FoodItems from './src/screens/FoodItems';
 import AddMeals from './src/screens/addmeals';
-import Profilescreen from './src/screens/ProfileScreen';
+import Profilescreen from './src/screens/profilescreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -23,8 +24,10 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          if (route.name === 'Track') {
+          if (route.name === 'FoodItems') {
             return <Ionicons name="fast-food" size={size} color={color} />;
+          } else if (route.name === 'Calculate') {
+            return <Ionicons name="calculator" size={size} color={color} />;
           } else if (route.name === 'Profile') {
             return <Ionicons name="person" size={size} color={color} />;
           }
@@ -42,7 +45,8 @@ const TabNavigator = () => {
         headerShown: false,
       })}
     >
-      <Tab.Screen name="Track" component={TrackerScreen} />
+      <Tab.Screen name="FoodItems" component={FoodItems} options={{ title: 'Home' }} />
+      <Tab.Screen name="Calculate" component={TrackerScreen} />
       <Tab.Screen name="Profile" component={Profilescreen} />
     </Tab.Navigator>
   );
@@ -50,15 +54,48 @@ const TabNavigator = () => {
 
 
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialRoute, setInitialRoute] = useState('Splash');
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData) {
+        // User is logged in, go directly to Main
+        setInitialRoute('Main');
+      } else {
+        // User is not logged in, show splash/login
+        setInitialRoute('Splash');
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+      setInitialRoute('Splash');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View style={[styles.screen, { backgroundColor: '#8A2BE2' }]}>
+        <ActivityIndicator size="large" color="white" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialRoute}>
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="Main" component={TabNavigator} />
-        <Stack.Screen name="FoodItems" component={FoodItems} /> 
-        <Stack.Screen name="AddMeals" component={AddMeals} /> 
+        <Stack.Screen name="FoodItems" component={FoodItems} />
+        <Stack.Screen name="AddMeals" component={AddMeals} />
         <Stack.Screen name="CaptureScreen" component={CaptureScreen} />
       </Stack.Navigator>
     </NavigationContainer>

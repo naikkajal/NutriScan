@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FoodItems = ({ route, navigation }) => {
-  const { dailyCalorieIntake } = route.params || {}; 
+  const [dailyCalorieIntake, setDailyCalorieIntake] = useState(0);
   const [selectedMeals, setSelectedMeals] = useState({
     Breakfast: [],
     "Morning Snack": [],
@@ -11,6 +13,26 @@ const FoodItems = ({ route, navigation }) => {
     "Evening Snack": [],
     Dinner: []
   });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadUserData();
+    }, [])
+  );
+
+  const loadUserData = async () => {
+    try {
+      const userDataString = await AsyncStorage.getItem('userData');
+      if (userDataString) {
+        const userData = JSON.parse(userDataString);
+        if (userData.dailyCalorieIntake) {
+          setDailyCalorieIntake(userData.dailyCalorieIntake);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
 
   useEffect(() => {
     if (route.params?.calories && route.params?.mealTitle) {
@@ -33,7 +55,7 @@ const FoodItems = ({ route, navigation }) => {
     navigation.navigate('CaptureScreen', {
       addMealCalories: addMealCalories,
       mealTitle: mealTitle,
-      dailyCalorieIntake: dailyCalorieIntake, 
+      dailyCalorieIntake: dailyCalorieIntake,
     });
   };
 

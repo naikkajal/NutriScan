@@ -4,6 +4,7 @@ import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
+import { BASE_URL } from '../api/config';
 
 const TrackerScreen = () => {
   const [height, setHeight] = useState('');
@@ -18,7 +19,7 @@ const TrackerScreen = () => {
 
   const calculateCalorieIntake = async () => {
     try {
-      const response = await axios.post('http:/192.168.249.199:5011/calculate', {
+      const response = await axios.post(`${BASE_URL}/calculate`, {
         height: Number(height),
         weight: Number(weight),
         age: Number(age),
@@ -38,8 +39,8 @@ const TrackerScreen = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps='always' style={{ backgroundColor: 'white' }}>
       <View style={styles.container}>
         <Text style={styles.title}>Track Your Daily Calorie Intake</Text>
-        
-        
+
+
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Height (cm)</Text>
           <TextInput
@@ -135,12 +136,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 40,
     textAlign: 'center',
-    marginTop:50,
-    textDecorationLine:"underline"
+    marginTop: 50,
+    textDecorationLine: "underline"
   },
   inputContainer: {
     marginBottom: 15,
-    marginTop:10
+    marginTop: 10
   },
   label: {
     fontSize: 16,
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop:25
+    marginTop: 25
   },
   buttonText: {
     color: '#fff',
